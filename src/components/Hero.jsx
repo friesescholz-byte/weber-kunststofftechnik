@@ -109,7 +109,7 @@ export default function Hero() {
               href="#produkte"
               className="inline-flex items-center gap-2 px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 text-sm font-semibold rounded-xl backdrop-blur-xs transition-colors self-center mt-3.5"
             >
-              Leistungen ansehen
+              Produkte ansehen
             </a>
           </div>
         </div>

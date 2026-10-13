@@ -46,7 +46,7 @@ export default function ProductsSection({ onRequestProduct }) {
         {/* Section Header */}
         <div className="max-w-3xl mb-16">
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400 block mb-3">
-            Leistungsspektrum
+            Produktprogramm
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
             Thermoplastische Lösungen für Industrie und Anlagenbau.
