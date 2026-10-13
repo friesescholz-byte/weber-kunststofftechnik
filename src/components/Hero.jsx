@@ -19,7 +19,7 @@ export default function Hero() {
   return (
     <section 
       ref={heroRef}
-      className="relative pt-16 pb-32 sm:pb-38 lg:pb-44 text-white overflow-hidden bg-[#0d2a14]"
+      className="relative pt-36 sm:pt-44 lg:pt-48 pb-32 sm:pb-38 lg:pb-44 text-white overflow-hidden bg-[#0d2a14]"
     >
       
       {/* Background Layers mit butterweichem Parallax-Scroll */}
