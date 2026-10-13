@@ -85,11 +85,6 @@ export default function Hero() {
         {/* Main Editorial Content (Höchste Lesbarkeit & Kontrast) */}
         <div className="max-w-4xl mb-12 md:mb-16">
           
-          {/* Eyebrow with white bar */}
-          <div className="inline-flex items-center gap-3 mb-5 text-xs font-extrabold tracking-widest uppercase text-white/95">
-            <span className="inline-block w-6 h-[2.5px] bg-white rounded-full"></span>
-            <span>KUNSTSTOFFTECHNIK WEBER GMBH · STANDORT MINDEN</span>
-          </div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08] mb-6">
             Industrieller{' '}

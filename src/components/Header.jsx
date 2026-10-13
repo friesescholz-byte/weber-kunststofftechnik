@@ -129,21 +129,21 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
     <header 
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-[#06170c]/95 backdrop-blur-md border-b border-emerald-900/50 shadow-xl shadow-black/25 py-2.5 sm:py-3' 
-          : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent border-b border-transparent py-4 sm:py-5 lg:py-6'
+          ? 'bg-[#06170c]/95 backdrop-blur-md border-b border-emerald-900/50 shadow-xl shadow-black/25 py-3 sm:py-3.5' 
+          : 'bg-[#06170c]/65 backdrop-blur-md border-b border-white/15 shadow-lg shadow-black/20 py-5 sm:py-6 lg:py-7'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 xl:gap-8 transition-all duration-300">
         
-        {/* Offizielles Weber Firmenlogo (reinweiß, groß und ausgewogen) */}
+        {/* Offizielles Weber Firmenlogo (reinweiß, ohne Punkte, groß und ausgewogen) */}
         <a href="#top" className="flex items-center shrink-0 group">
           <img 
-            src="https://pub-b33108412309406a9a941ddc51e9a5b9.r2.dev/Weber-Kunststaofftechnik/weber-logo-1-fbg-weiss-1024x410_11.webp" 
+            src="https://pub-b33108412309406a9a941ddc51e9a5b9.r2.dev/Weber-Kunststaofftechnik/weber-logo-clean.webp" 
             alt="Kunststofftechnik Weber GmbH" 
             className={`w-auto object-contain transition-all duration-300 ${
               isScrolled 
                 ? 'h-8 sm:h-9 md:h-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]' 
-                : 'h-11 sm:h-12 md:h-13 lg:h-14 xl:h-15 drop-shadow-[0_2px_14px_rgba(0,0,0,0.7)]'
+                : 'h-11 sm:h-12 md:h-14 lg:h-16 drop-shadow-[0_2px_14px_rgba(0,0,0,0.7)]'
             }`}
           />
         </a>

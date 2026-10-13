@@ -7,6 +7,11 @@
     @apply bg-[#FBF9F5] text-slate-900;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* Custom fine line utilities & subtle transitions */
