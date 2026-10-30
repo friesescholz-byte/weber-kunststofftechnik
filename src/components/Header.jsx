@@ -1,99 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Search, X, ChevronDown, Menu, ArrowRight } from 'lucide-react';
-import { ANWENDUNGSGEBIETE, PRODUKTE, WERKSTOFFE } from '../data/weberData';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, X, ChevronDown, Menu, ArrowRight, FileText, FlaskConical, Layers, Briefcase } from 'lucide-react';
+import { useCms } from '../data/cmsStore';
+import { CHEMICAL_DATABASE } from '../data/weberData';
+import SpecialCtaButton from './SpecialCtaButton';
 
-// Strukturierte Cluster für Anwendungsgebiete (3 kompakte, logische Spalten)
-const ANWENDUNGEN_CLUSTERS = [
-  {
-    title: "Chemie & Schwerindustrie",
-    items: [
-      { id: "chemie-tanklaeger", title: "Chemie Tankläger" },
-      { id: "hochreine-chemie", title: "Hochreine Chemie (UHP)" },
-      { id: "galvanotechnik", title: "Galvanotechnik & Eloxal" },
-      { id: "feuerverzinkung", title: "Feuerverzinkung & Beizen" },
-    ]
-  },
-  {
-    title: "Umwelt & Prozesstechnik",
-    items: [
-      { id: "abluft-umwelttechnik", title: "Abluft- & Umwelttechnik" },
-      { id: "abwasserbehandlung", title: "Abwasserbehandlung" },
-      { id: "fuellen-dosieren", title: "Füllen & Dosieren" },
-      { id: "lebensmittelindustrie", title: "Lebensmittelindustrie" },
-    ]
-  },
-  {
-    title: "Infrastruktur & Sonderbau",
-    items: [
-      { id: "rohrleitungsbau-sektor", title: "Rohrleitungsbau" },
-      { id: "passive-lagerung", title: "Passive Lagerung (WHG)" },
-      { id: "stahlbau", title: "Stahlbau & Tragwerke" },
-      { id: "sonderbauten", title: "Sonderbauten & Prototypen" },
-    ]
-  }
-];
-
-// Strukturierte Cluster für Produkte (3 kompakte Spalten)
-const PRODUKTE_CLUSTERS = [
-  {
-    title: "Tanks & Großbehälter",
-    items: [
-      { id: "lager-prozessbehaelter-rund", title: "Lagerbehälter Rund (DIBt)" },
-      { id: "lager-prozessbehaelter-rechteck", title: "Lagerbehälter Rechteck" },
-      { id: "silos-schuettgut", title: "Silos & Schüttgutbehälter" },
-      { id: "auffangwannen-sicherheit", title: "Auffangwannen & WHG" },
-    ]
-  },
-  {
-    title: "Umwelt & Verfahrenstechnik",
-    items: [
-      { id: "abluftwaescher-kolonnen", title: "Abluftwäscher & Kolonnen" },
-      { id: "dosierstationen-mischanlagen", title: "Dosier- & Mischanlagen" },
-      { id: "galvanik-prozessbecken", title: "Galvanik & Prozessbecken" },
-      { id: "lueftung-schalldaempfer", title: "Schalldämpfer & Lüftung" },
-    ]
-  },
-  {
-    title: "Rohre, Armaturen & Baugruppen",
-    items: [
-      { id: "industrierohrleitungsbau", title: "Industrierohrleitungsbau" },
-      { id: "armaturen-pumpen-zubehoer", title: "Armaturen & Messtechnik" },
-      { id: "sonderapparate-baugruppen", title: "Sonderapparatebau" },
-    ]
-  }
-];
-
-// Strukturierte Cluster für Werkstoffe (3 saubere Spalten für maximale Übersichtlichkeit)
-const WERKSTOFFE_CLUSTERS = [
-  {
-    title: "Standard-Thermoplaste",
-    items: [
-      { id: "pe-polyethylen", code: "PE 100", name: "Polyethylen · Laugen & Wässer", temp: "bis +60 °C" },
-      { id: "pp-polypropylen", code: "PP-H / PP-s", name: "Polypropylen · Säuren & Beizen", temp: "bis +100 °C" },
-      { id: "pvc-polyvinylchlorid", code: "PVC-U / PVC-C", name: "Polyvinylchlorid · Abluft & Wäscher", temp: "bis +85 °C" },
-    ]
-  },
-  {
-    title: "Fluorpolymere & High Purity",
-    items: [
-      { id: "pvdf", code: "PVDF", name: "Fluorpolymer · Reinstmedien", temp: "bis +140 °C" },
-      { id: "ectfe", code: "ECTFE (Halar®)", name: "Ethylen-CTFE · Chlorgas", temp: "bis +150 °C" },
-      { id: "pfa", code: "PFA", name: "Perfluoralkoxy · Universell inert", temp: "bis +260 °C" },
-    ]
-  },
-  {
-    title: "Verbundwerkstoffe & Güte",
-    items: [
-      { id: "dual-laminate", code: "Thermoplast / GFK", name: "Dual-Laminat Großtanks", temp: "Bis 100 m³" },
-      { id: "schweisszusatz", code: "DVS-Zulassung", name: "Geprüfte Schweißfachkräfte", temp: "DVS 2207" },
-      { id: "lining", code: "Liner & Inlining", name: "Korrosionsfeste Auskleidung", temp: "WHG & DIBt" },
-    ]
-  }
-];
-
-export default function Header({ onSearchQuery, onSelectCategory }) {
+export default function Header({ currentPath, onNavigate, onSearchQuery, onSelectCategory, onOpenRequestModal }) {
+  const { anwendungsgebiete, produkte, werkstoffe, downloads, jobs } = useCms();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -106,22 +21,177 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (onSearchQuery && searchTerm.trim()) {
-      onSearchQuery(searchTerm.trim());
-    }
-  };
+  // Dynamische 3-Spalten-Aufteilung für Anwendungsgebiete (inkl. im Admin neu angelegter Einträge)
+  const anwendungenClusters = useMemo(() => {
+    const list = anwendungsgebiete || [];
+    const colSize = Math.ceil(list.length / 3) || 4;
+    return [
+      { title: "Chemie & Schwerindustrie", items: list.slice(0, colSize) },
+      { title: "Umwelt & Prozesstechnik", items: list.slice(colSize, colSize * 2) },
+      { title: "Infrastruktur & Sonderbau", items: list.slice(colSize * 2) }
+    ];
+  }, [anwendungsgebiete]);
 
-  const handleNavClick = (anchor, item) => {
+  // Dynamische 3-Spalten-Aufteilung für Produkte (alle 11+ Produkte)
+  const produkteClusters = useMemo(() => {
+    const list = produkte || [];
+    const colSize = Math.ceil(list.length / 3) || 4;
+    return [
+      { title: "Tanks & Großbehälter", items: list.slice(0, colSize) },
+      { title: "Umwelt & Verfahrenstechnik", items: list.slice(colSize, colSize * 2) },
+      { title: "Montage, Logistik & Engineering", items: list.slice(colSize * 2) }
+    ];
+  }, [produkte]);
+
+  // Dynamische 3-Spalten-Aufteilung für Werkstoffe (alle 7+ Werkstoffe)
+  const werkstoffeClusters = useMemo(() => {
+    const list = werkstoffe || [];
+    return [
+      { title: "Standard-Thermoplaste", items: list.slice(0, 3) },
+      { title: "Fluorpolymere & High Purity", items: list.slice(3, 6) },
+      {
+        title: "Spezial- & Verbundwerkstoffe",
+        items: [
+          ...list.slice(6),
+          {
+            id: "verbundbehaelter-link",
+            isProductLink: true,
+            targetRoute: "/produkte/verbundbehaelter",
+            code: "GFK / Dual-Laminate",
+            name: "Verbundbauweise mit Inliner",
+            temp: "bis +140 °C"
+          },
+          {
+            id: "zertifikate-link",
+            isPageLink: true,
+            targetRoute: "/ueber-uns#zertifizierungen",
+            code: "DVS 2207 / DIBt",
+            name: "Geprüfte Schweiß- & Werkstoffgüte",
+            temp: "ISO 9001"
+          }
+        ]
+      }
+    ];
+  }, [werkstoffe]);
+
+  // Intelligente Echtzeit-Suchvorschläge (Produkte, Werkstoffe, Anwendungsgebiete, Chemikalien, Downloads, Jobs)
+  const liveResults = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q || q.length < 2) return [];
+    const matches = [];
+
+    (produkte || []).forEach((p) => {
+      if (
+        p.title.toLowerCase().includes(q) ||
+        (p.subtitle && p.subtitle.toLowerCase().includes(q)) ||
+        (p.desc && p.desc.toLowerCase().includes(q))
+      ) {
+        matches.push({
+          type: 'Produkt',
+          title: p.title,
+          sub: p.subtitle || 'Produktbereich',
+          route: `/produkte/${p.id}`,
+        });
+      }
+    });
+
+    (anwendungsgebiete || []).forEach((a) => {
+      if (
+        a.title.toLowerCase().includes(q) ||
+        (a.desc && a.desc.toLowerCase().includes(q)) ||
+        (a.specs && a.specs.toLowerCase().includes(q))
+      ) {
+        matches.push({
+          type: 'Anwendungsgebiet',
+          title: a.title,
+          sub: a.tag || 'Branchenlösung',
+          route: `/anwendungsgebiete/${a.id}`,
+        });
+      }
+    });
+
+    (werkstoffe || []).forEach((w) => {
+      if (
+        w.code.toLowerCase().includes(q) ||
+        w.name.toLowerCase().includes(q) ||
+        (w.desc && w.desc.toLowerCase().includes(q))
+      ) {
+        matches.push({
+          type: 'Werkstoff',
+          title: `${w.code} – ${w.name}`,
+          sub: `Temperaturbereich: ${w.temp}`,
+          route: `/werkstoffe/${w.id}`,
+        });
+      }
+    });
+
+    CHEMICAL_DATABASE.forEach((c) => {
+      if (
+        c.name.toLowerCase().includes(q) ||
+        c.empfohlenerWerkstoff.toLowerCase().includes(q)
+      ) {
+        matches.push({
+          type: 'Chemikalie / Medium',
+          title: `${c.name} (${c.concentration})`,
+          sub: `Empfehlung: ${c.empfohlenerWerkstoff} · ${c.behälter}`,
+          route: c.targetRoute || '/werkstoffe/pe-polyethylen',
+        });
+      }
+    });
+
+    (downloads || []).forEach((d) => {
+      if (
+        d.title.toLowerCase().includes(q) ||
+        (d.description && d.description.toLowerCase().includes(q))
+      ) {
+        matches.push({
+          type: 'Download (PDF)',
+          title: d.title,
+          sub: d.fileSize || 'PDF-Dokument',
+          route: '/downloads',
+        });
+      }
+    });
+
+    (jobs || []).forEach((j) => {
+      if (j.active !== false && j.title.toLowerCase().includes(q)) {
+        matches.push({
+          type: 'Karriere / Job',
+          title: j.title,
+          sub: `${j.department} · ${j.location}`,
+          route: `/karriere?job=${j.id}`,
+        });
+      }
+    });
+
+    return matches.slice(0, 7);
+  }, [searchTerm, produkte, anwendungsgebiete, werkstoffe, downloads, jobs]);
+
+  const handleRoute = (e, route, item) => {
+    if (e) e.preventDefault();
     setActiveDropdown(null);
     setMobileMenuOpen(false);
+    setSearchFocused(false);
     if (item && onSelectCategory) {
       onSelectCategory(item);
     }
-    const el = document.getElementById(anchor);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    if (onNavigate) {
+      onNavigate(route);
+    }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (liveResults.length > 0) {
+      const top = liveResults[0];
+      setSearchFocused(false);
+      setSearchTerm('');
+      if (onNavigate) onNavigate(top.route);
+      return;
+    }
+    if (onSearchQuery && searchTerm.trim()) {
+      onSearchQuery(searchTerm.trim());
+      setSearchFocused(false);
     }
   };
 
@@ -135,8 +205,12 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 xl:gap-8 transition-all duration-300">
         
-        {/* Offizielles Weber Firmenlogo (reinweiß, ohne Punkte, groß und ausgewogen) */}
-        <a href="#top" className="flex items-center shrink-0 group">
+        {/* Offizielles Weber Firmenlogo */}
+        <a
+          href="/"
+          onClick={(e) => handleRoute(e, '/')}
+          className="flex items-center shrink-0 group"
+        >
           <img 
             src="https://pub-b33108412309406a9a941ddc51e9a5b9.r2.dev/Weber-Kunststaofftechnik/weber-logo-clean.webp" 
             alt="Kunststofftechnik Weber GmbH" 
@@ -148,74 +222,20 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
           />
         </a>
 
-        {/* Desktop Navigation mit großzügigem Raum & ohne Einquetschen */}
+        {/* Desktop Navigation */}
         <nav 
           className={`hidden lg:flex items-center gap-3.5 xl:gap-6 text-sm font-medium transition-colors duration-300 ${
             isScrolled ? 'text-neutral-200' : 'text-white/90'
           }`}
           onMouseLeave={() => setActiveDropdown(null)}
         >
-          {/* 1. Anwendungsgebiete Dropdown */}
-          <div className="relative py-2">
-            <button 
-              onMouseEnter={() => setActiveDropdown('anwendungen')}
-              onClick={() => handleNavClick('anwendungsgebiete')}
-              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
-                activeDropdown === 'anwendungen' ? 'text-white font-semibold' : ''
-              }`}
-            >
-              <span>Anwendungsgebiete</span>
-              <ChevronDown className="w-3.5 h-3.5 text-emerald-400/80" />
-            </button>
-
-            {activeDropdown === 'anwendungen' && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[720px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-6 grid grid-cols-3 gap-6 animate-in fade-in duration-150 z-50 text-slate-900">
-                {ANWENDUNGEN_CLUSTERS.map((group, idx) => (
-                  <div key={idx} className="flex flex-col">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-neutral-100">
-                      {group.title}
-                    </span>
-                    <div className="flex flex-col space-y-1">
-                      {group.items.map((item) => {
-                        const fullItem = ANWENDUNGSGEBIETE.find(a => a.id === item.id) || item;
-                        return (
-                          <a
-                            key={item.id}
-                            href="#anwendungsgebiete"
-                            onClick={() => handleNavClick('anwendungsgebiete', fullItem)}
-                            className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-2 py-1.5 rounded-md transition-colors font-medium flex items-center justify-between group"
-                          >
-                            <span>{item.title}</span>
-                            <ArrowRight className="w-3 h-3 text-neutral-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-
-                {/* Footer Bar */}
-                <div className="col-span-3 pt-3 border-t border-neutral-100 flex justify-end items-center bg-neutral-50/60 -mx-6 -mb-6 px-6 py-2.5 rounded-b-2xl">
-                  <a 
-                    href="#anwendungsgebiete" 
-                    onClick={() => setActiveDropdown(null)} 
-                    className="text-xs font-bold text-weber-700 hover:text-weber-800 flex items-center gap-1"
-                  >
-                    <span>Alle 12 Bereiche ansehen</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* 2. Produkte Dropdown */}
+          {/* 1. Produkte Dropdown */}
           <div className="relative py-2">
             <button 
               onMouseEnter={() => setActiveDropdown('produkte')}
-              onClick={() => handleNavClick('produkte')}
+              onClick={(e) => handleRoute(e, '/#produkte')}
               className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
-                activeDropdown === 'produkte' ? 'text-white font-semibold' : ''
+                activeDropdown === 'produkte' || currentPath?.startsWith('/produkte') ? 'text-white font-semibold' : ''
               }`}
             >
               <span>Produkte</span>
@@ -223,39 +243,26 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
             </button>
 
             {activeDropdown === 'produkte' && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[720px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-6 grid grid-cols-3 gap-6 animate-in fade-in duration-150 z-50 text-slate-900">
-                {PRODUKTE_CLUSTERS.map((group, idx) => (
-                  <div key={idx} className="flex flex-col">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-neutral-100">
-                      {group.title}
-                    </span>
-                    <div className="flex flex-col space-y-1">
-                      {group.items.map((item) => {
-                        const fullItem = PRODUKTE.find(p => p.id === item.id) || item;
-                        return (
-                          <a
-                            key={item.id}
-                            href="#produkte"
-                            onClick={() => handleNavClick('produkte', fullItem)}
-                            className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-2 py-1.5 rounded-md transition-colors font-medium flex items-center justify-between group"
-                          >
-                            <span>{item.title}</span>
-                            <ArrowRight className="w-3 h-3 text-neutral-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[480px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-4 grid grid-cols-2 gap-x-2 gap-y-0.5 animate-in fade-in duration-150 z-50 text-slate-900">
+                {(produkte || []).map((p) => (
+                  <a
+                    key={p.id}
+                    href={`/produkte/${p.id}`}
+                    onClick={(e) => handleRoute(e, `/produkte/${p.id}`, p)}
+                    className="text-xs text-slate-700 hover:text-[#1c5f2e] hover:bg-emerald-50/70 px-2.5 py-1.5 rounded-lg transition-colors font-semibold flex items-center justify-between group"
+                  >
+                    <span className="truncate pr-2">{p.title}</span>
+                    <ArrowRight className="w-3 h-3 text-[#1c5f2e] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </a>
                 ))}
 
-                {/* Footer Bar */}
-                <div className="col-span-3 pt-3 border-t border-neutral-100 flex justify-end items-center bg-neutral-50/60 -mx-6 -mb-6 px-6 py-2.5 rounded-b-2xl">
+                <div className="col-span-2 pt-2 mt-1.5 border-t border-neutral-100 px-2.5 flex justify-between items-center text-xs">
                   <a 
-                    href="#produkte" 
-                    onClick={() => setActiveDropdown(null)} 
-                    className="text-xs font-bold text-weber-700 hover:text-weber-800 flex items-center gap-1"
+                    href="/#produkte" 
+                    onClick={(e) => handleRoute(e, '/#produkte')} 
+                    className="font-bold text-[#1c5f2e] hover:underline flex items-center gap-1"
                   >
-                    <span>Gesamtes Sortiment öffnen</span>
+                    <span>Alle {produkte.length} Produkte im Überblick</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -263,13 +270,13 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
             )}
           </div>
 
-          {/* 3. Werkstoffe Dropdown – JETZT SAUBER & ÜBERSICHTLICH IN 3 SPALTEN */}
+          {/* 2. Werkstoffe Dropdown */}
           <div className="relative py-2">
             <button 
               onMouseEnter={() => setActiveDropdown('werkstoffe')}
-              onClick={() => handleNavClick('werkstoffe')}
+              onClick={(e) => handleRoute(e, '/#werkstoffe')}
               className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
-                activeDropdown === 'werkstoffe' ? 'text-white font-semibold' : ''
+                activeDropdown === 'werkstoffe' || currentPath?.startsWith('/werkstoffe') ? 'text-white font-semibold' : ''
               }`}
             >
               <span>Werkstoffe</span>
@@ -277,48 +284,29 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
             </button>
 
             {activeDropdown === 'werkstoffe' && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[720px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-6 grid grid-cols-3 gap-6 animate-in fade-in duration-150 z-50 text-slate-900">
-                {WERKSTOFFE_CLUSTERS.map((group, idx) => (
-                  <div key={idx} className="flex flex-col">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-neutral-100">
-                      {group.title}
-                    </span>
-                    <div className="flex flex-col space-y-1.5">
-                      {group.items.map((item) => {
-                        const fullItem = WERKSTOFFE.find(w => w.id === item.id) || item;
-                        return (
-                          <a
-                            key={item.id}
-                            href="#werkstoffe"
-                            onClick={() => handleNavClick('werkstoffe', fullItem)}
-                            className="p-2 rounded-lg hover:bg-neutral-50 hover:text-emerald-700 transition-colors flex flex-col group border border-transparent hover:border-neutral-200/60"
-                          >
-                            <div className="flex items-center justify-between gap-1 mb-0.5">
-                              <span className="font-bold text-slate-900 text-xs group-hover:text-emerald-700 transition-colors">
-                                {item.code}
-                              </span>
-                              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/60 shrink-0">
-                                {item.temp}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-neutral-500 line-clamp-1">
-                              {item.name}
-                            </span>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[300px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-3.5 flex flex-col space-y-0.5 animate-in fade-in duration-150 z-50 text-slate-900">
+                {(werkstoffe || []).map((w) => {
+                  const cleanName = w.name || w.code;
+                  return (
+                    <a
+                      key={w.id}
+                      href={`/werkstoffe/${w.id}`}
+                      onClick={(e) => handleRoute(e, `/werkstoffe/${w.id}`, w)}
+                      className="text-xs text-slate-700 hover:text-[#1c5f2e] hover:bg-emerald-50/70 px-2.5 py-1.5 rounded-lg transition-colors font-semibold flex items-center justify-between group"
+                    >
+                      <span className="truncate pr-2">{cleanName}</span>
+                      <ArrowRight className="w-3 h-3 text-[#1c5f2e] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+                    </a>
+                  );
+                })}
 
-                {/* Footer Bar */}
-                <div className="col-span-3 pt-3 border-t border-neutral-100 flex justify-end items-center bg-neutral-50/60 -mx-6 -mb-6 px-6 py-2.5 rounded-b-2xl">
+                <div className="pt-2 mt-1.5 border-t border-neutral-100 px-2.5 flex justify-between items-center text-xs">
                   <a 
-                    href="#werkstoffe" 
-                    onClick={() => setActiveDropdown(null)} 
-                    className="text-xs font-bold text-weber-700 hover:text-weber-800 flex items-center gap-1"
+                    href="/#werkstoffe" 
+                    onClick={(e) => handleRoute(e, '/#werkstoffe')} 
+                    className="font-bold text-[#1c5f2e] hover:underline flex items-center gap-1"
                   >
-                    <span>Vollständige Werkstofftabelle öffnen</span>
+                    <span>Alle {werkstoffe.length} Werkstoffe im Überblick</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -326,80 +314,243 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
             )}
           </div>
 
-          {/* 4. Über uns (Freier, entspannter Menüpunkt ohne Einquetschen) */}
-          <a 
-            href="#ueber-uns" 
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            className="hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-md hover:bg-white/10 whitespace-nowrap"
-            title="Bereich in Vorbereitung"
-          >
-            Über uns
-          </a>
+          {/* 3. Anwendungsgebiete Dropdown (an dritter Stelle) */}
+          <div className="relative py-2">
+            <button 
+              onMouseEnter={() => setActiveDropdown('anwendungen')}
+              onClick={(e) => handleRoute(e, '/#anwendungsgebiete')}
+              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
+                activeDropdown === 'anwendungen' || currentPath?.startsWith('/anwendungsgebiete') ? 'text-white font-semibold' : ''
+              }`}
+            >
+              <span>Anwendungsgebiete</span>
+              <ChevronDown className="w-3.5 h-3.5 text-emerald-400/80" />
+            </button>
 
-          {/* 5. Downloads (Freier, entspannter Menüpunkt) */}
+            {activeDropdown === 'anwendungen' && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[500px] bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-4 grid grid-cols-2 gap-x-2 gap-y-0.5 animate-in fade-in duration-150 z-50 text-slate-900">
+                {(anwendungsgebiete || []).map((item) => (
+                  <a
+                    key={item.id}
+                    href={`/anwendungsgebiete/${item.id}`}
+                    onClick={(e) => handleRoute(e, `/anwendungsgebiete/${item.id}`, item)}
+                    className="text-xs text-slate-700 hover:text-[#1c5f2e] hover:bg-emerald-50/70 px-2.5 py-1.5 rounded-lg transition-colors font-semibold flex items-center justify-between group"
+                  >
+                    <span className="truncate pr-2">{item.title}</span>
+                    <ArrowRight className="w-3 h-3 text-[#1c5f2e] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </a>
+                ))}
+
+                <div className="col-span-2 pt-2 mt-1.5 border-t border-neutral-100 px-2.5 flex justify-between items-center text-xs">
+                  <a 
+                    href="/#anwendungsgebiete" 
+                    onClick={(e) => handleRoute(e, '/#anwendungsgebiete')} 
+                    className="font-bold text-[#1c5f2e] hover:underline flex items-center gap-1"
+                  >
+                    <span>Alle {anwendungsgebiete.length} Fachbereiche im Überblick</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 4. Über uns / Unternehmen (mit Schnellzugriff auf Philosophie, Zertifizierungen & Standorte) */}
+          <div className="relative py-2">
+            <a 
+              href="/ueber-uns" 
+              onMouseEnter={() => setActiveDropdown('unternehmen')}
+              onClick={(e) => handleRoute(e, '/ueber-uns')}
+              className={`flex items-center gap-1 hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-md hover:bg-white/10 whitespace-nowrap ${
+                currentPath?.startsWith('/ueber-uns') ? 'text-white font-semibold bg-white/10' : ''
+              }`}
+            >
+              <span>Über uns</span>
+              <ChevronDown className="w-3.5 h-3.5 text-emerald-400/80" />
+            </a>
+
+            {activeDropdown === 'unternehmen' && (
+              <div className="absolute top-full left-0 w-64 bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-4 flex flex-col space-y-1 animate-in fade-in duration-150 z-50 text-slate-900">
+                <a
+                  href="/ueber-uns"
+                  onClick={(e) => handleRoute(e, '/ueber-uns')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-semibold flex items-center justify-between group"
+                >
+                  <span>Unternehmen & Historie</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+                <a
+                  href="/ueber-uns#philosophie"
+                  onClick={(e) => handleRoute(e, '/ueber-uns#philosophie')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-medium flex items-center justify-between group"
+                >
+                  <span>Firmenphilosophie</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+                <a
+                  href="/ueber-uns#zertifizierungen"
+                  onClick={(e) => handleRoute(e, '/ueber-uns#zertifizierungen')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-medium flex items-center justify-between group"
+                >
+                  <span>Zertifizierungen & Qualität</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+                <a
+                  href="/ueber-uns#standorte"
+                  onClick={(e) => handleRoute(e, '/ueber-uns#standorte')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-medium flex items-center justify-between group"
+                >
+                  <span>Standorte weltweit</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* 5. Downloads */}
           <a 
-            href="#downloads" 
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            className="hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-md hover:bg-white/10 whitespace-nowrap"
-            title="Bereich in Vorbereitung"
+            href="/downloads" 
+            onClick={(e) => handleRoute(e, '/downloads')}
+            className={`hover:text-white transition-colors cursor-pointer px-2 py-1 rounded-md hover:bg-white/10 whitespace-nowrap ${
+              currentPath === '/downloads' ? 'text-white font-semibold bg-white/10' : ''
+            }`}
           >
             Downloads
           </a>
 
           {/* 6. Karriere */}
-          <a 
-            href="https://applylane.de/weberfachkraft" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hover:text-white transition-colors text-emerald-400 font-semibold px-2 py-1 rounded-md hover:bg-white/10 whitespace-nowrap"
-          >
-            Karriere
-          </a>
+          <div className="relative py-2">
+            <a 
+              href="/karriere" 
+              onMouseEnter={() => setActiveDropdown('karriere')}
+              onClick={(e) => handleRoute(e, '/karriere')}
+              className={`flex items-center gap-1 hover:text-white transition-colors text-emerald-400 font-semibold px-2 py-1 rounded-md hover:bg-white/10 whitespace-nowrap ${
+                currentPath?.startsWith('/karriere') ? 'bg-white/10 text-emerald-300' : ''
+              }`}
+            >
+              <span>Karriere</span>
+              <ChevronDown className="w-3.5 h-3.5 text-emerald-400/80" />
+            </a>
+
+            {activeDropdown === 'karriere' && (
+              <div className="absolute top-full right-0 w-64 bg-white border border-neutral-200/90 rounded-2xl shadow-2xl p-4 flex flex-col space-y-1 animate-in fade-in duration-150 z-50 text-slate-900">
+                <a
+                  href="/karriere#jobs"
+                  onClick={(e) => handleRoute(e, '/karriere#jobs')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-semibold flex items-center justify-between group"
+                >
+                  <span>Jobportal ({jobs.filter(j => j.active !== false).length} Stellen)</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+                <a
+                  href="/karriere#ausbildung"
+                  onClick={(e) => handleRoute(e, '/karriere#ausbildung')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-medium flex items-center justify-between group"
+                >
+                  <span>Ausbildungsangebote</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+                <a
+                  href="/karriere#arbeitgeber"
+                  onClick={(e) => handleRoute(e, '/karriere#arbeitgeber')}
+                  className="text-xs text-slate-700 hover:text-weber-700 hover:bg-neutral-50 px-3 py-2 rounded-lg font-medium flex items-center justify-between group"
+                >
+                  <span>Wir als Arbeitgeber</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-neutral-300 group-hover:text-weber-700" />
+                </a>
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* Right Actions: Durchgängiges Suchfeld & Kontakt-Button */}
+        {/* Right Actions: Intelligentes Suchfeld & Kontakt-Button */}
         <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           
-          {/* Durchgängiges, kompaktes Suchfeld mit Lupe */}
-          <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-            <div className={`flex items-center border rounded-lg px-2.5 py-1.5 transition-all shadow-xs w-28 sm:w-36 xl:w-44 ${
-              isScrolled 
-                ? 'bg-black/35 hover:bg-black/45 focus-within:bg-black/60 border-emerald-800/50 text-white' 
-                : 'bg-white/10 hover:bg-white/15 focus-within:bg-white/20 border-white/20 text-white'
-            }`}>
-              <Search className={`w-3.5 h-3.5 mr-2 shrink-0 ${isScrolled ? 'text-emerald-400' : 'text-white/80'}`} />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Suchbegriff..."
-                className="w-full text-xs text-white placeholder:text-white/60 bg-transparent outline-none"
-              />
-              {searchTerm && (
-                <button
-                  type="button"
-                  onClick={() => setSearchTerm('')}
-                  className="text-white/60 hover:text-white p-0.5 shrink-0"
-                  title="Zurücksetzen"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          </form>
+          <div className="relative">
+            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+              <div className={`flex items-center border rounded-lg px-2.5 py-1.5 transition-all shadow-xs w-32 sm:w-40 xl:w-48 ${
+                isScrolled 
+                  ? 'bg-black/35 hover:bg-black/45 focus-within:bg-black/60 border-emerald-800/50 text-white' 
+                  : 'bg-white/10 hover:bg-white/15 focus-within:bg-white/20 border-white/20 text-white'
+              }`}>
+                <Search className={`w-3.5 h-3.5 mr-2 shrink-0 ${isScrolled ? 'text-emerald-400' : 'text-white/80'}`} />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="z.B. Salzsäure, PVDF..."
+                  className="w-full text-xs text-white placeholder:text-white/60 bg-transparent outline-none"
+                />
+                {searchTerm && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchTerm('')}
+                    className="text-white/60 hover:text-white p-0.5 shrink-0"
+                    title="Zurücksetzen"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            </form>
 
-          {/* Primary Action Button */}
-          <a
-            href="#anfrage"
-            onClick={() => handleNavClick('anfrage')}
-            className="hidden sm:inline-flex items-center justify-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg shadow-md shadow-emerald-950/40 border border-emerald-500/30 transition-all whitespace-nowrap"
-          >
-            Projekt anfragen
-          </a>
+            {/* Live-Suchvorschläge Dropdown */}
+            {searchFocused && searchTerm.trim().length >= 2 && (
+              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-neutral-200 rounded-2xl shadow-2xl overflow-hidden z-50 text-slate-900">
+                <div className="px-4 py-2.5 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                    Direkt-Treffer ({liveResults.length})
+                  </span>
+                  <span className="text-[11px] text-emerald-700 font-medium">
+                    Industrie-Sofortsuche
+                  </span>
+                </div>
+                {liveResults.length > 0 ? (
+                  <div className="divide-y divide-neutral-100 max-h-80 overflow-y-auto">
+                    {liveResults.map((res, idx) => (
+                      <a
+                        key={idx}
+                        href={res.route}
+                        onMouseDown={(e) => handleRoute(e, res.route)}
+                        className="px-4 py-3 hover:bg-emerald-50/50 flex items-start justify-between gap-3 transition-colors block"
+                      >
+                        <div>
+                          <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded mb-1">
+                            {res.type}
+                          </span>
+                          <div className="text-xs font-bold text-slate-900">{res.title}</div>
+                          <div className="text-[11px] text-neutral-500 mt-0.5">{res.sub}</div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-neutral-400 shrink-0 mt-1" />
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-4 py-6 text-center text-xs text-neutral-500">
+                    Keine direkten Treffer für „{searchTerm}“. Drücken Sie Enter für die Volltextsuche.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Primary Action Button: Weber Special CTA (compact size='sm') */}
+          <div className="hidden sm:block">
+            <SpecialCtaButton
+              size="sm"
+              text="Projekt anfragen"
+              onClick={(e) => {
+                if (e) e.preventDefault();
+                if (onOpenRequestModal) {
+                  onOpenRequestModal();
+                } else {
+                  handleRoute(e, '/#anfrage');
+                }
+              }}
+            />
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -415,35 +566,59 @@ export default function Header({ onSearchQuery, onSelectCategory }) {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-emerald-900/40 bg-[#06170c]/98 backdrop-blur-xl px-6 py-6 space-y-4 shadow-2xl">
+        <div className="lg:hidden border-t border-emerald-900/40 bg-[#06170c]/98 backdrop-blur-xl px-6 py-6 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
           <form onSubmit={handleSearchSubmit} className="flex items-center border border-emerald-800/60 rounded-lg px-3 py-2 bg-black/40 mb-4">
             <Search className="w-4 h-4 text-emerald-400 mr-2" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Suchbegriff eingeben..."
+              placeholder="Suchbegriff eingeben (z.B. Salzsäure, Tank)..."
               className="text-xs text-white placeholder:text-white/50 w-full outline-none bg-transparent"
             />
           </form>
 
           <div className="flex flex-col space-y-3 text-sm font-medium text-white/90">
-            <a href="#anwendungsgebiete" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-emerald-400 transition-colors">Anwendungsgebiete (12)</a>
-            <a href="#produkte" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-emerald-400 transition-colors">Produkte (11)</a>
-            <a href="#werkstoffe" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-emerald-400 transition-colors">Werkstoffe (7)</a>
-            <a href="#ueber-uns" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); }} className="py-1 hover:text-emerald-400 transition-colors">Über uns</a>
-            <a href="#downloads" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); }} className="py-1 hover:text-emerald-400 transition-colors">Downloads</a>
-            <a href="https://applylane.de/weberfachkraft" target="_blank" rel="noopener noreferrer" className="py-1 text-emerald-400 font-semibold">Karriereportal</a>
+            <a href="/#produkte" onClick={(e) => handleRoute(e, '/#produkte')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+              <span>Produkte ({produkte.length})</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </a>
+            <a href="/#werkstoffe" onClick={(e) => handleRoute(e, '/#werkstoffe')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+              <span>Werkstoffe ({werkstoffe.length})</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </a>
+            <a href="/#anwendungsgebiete" onClick={(e) => handleRoute(e, '/#anwendungsgebiete')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+              <span>Anwendungsgebiete ({anwendungsgebiete.length})</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </a>
+            <a href="/ueber-uns" onClick={(e) => handleRoute(e, '/ueber-uns')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+              <span>Über uns & Standorte</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </a>
+            <a href="/downloads" onClick={(e) => handleRoute(e, '/downloads')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+              <span>Downloads & Zertifikate</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </a>
+            <a href="/karriere" onClick={(e) => handleRoute(e, '/karriere')} className="py-1.5 text-emerald-400 font-semibold flex justify-between items-center">
+              <span>Karriere & Jobportal</span>
+              <ArrowRight className="w-4 h-4 text-emerald-400" />
+            </a>
           </div>
 
-          <div className="pt-4 border-t border-emerald-900/60">
-            <a
-              href="#anfrage"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-center text-xs font-semibold rounded-lg shadow-md"
-            >
-              Projekt anfragen
-            </a>
+          <div className="pt-4 border-t border-emerald-900/60 flex justify-center">
+            <SpecialCtaButton
+              size="sm"
+              text="Projekt anfragen"
+              onClick={(e) => {
+                if (e) e.preventDefault();
+                setMobileMenuOpen(false);
+                if (onOpenRequestModal) {
+                  onOpenRequestModal();
+                } else {
+                  handleRoute(e, '/#anfrage');
+                }
+              }}
+            />
           </div>
         </div>
       )}
