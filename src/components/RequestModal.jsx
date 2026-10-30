@@ -1,17 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, UploadCloud, FileCheck, ArrowRight } from 'lucide-react';
-import { COMPANY_FACTS } from '../data/weberData';
+import { useCms } from '../data/cmsStore';
 
-function getCleanProjectTitle(prefill) {
-  if (!prefill) return '';
-  if (typeof prefill === 'string') return prefill;
-  if (prefill.title) return prefill.title;
-  if (prefill.name) return prefill.name;
-  if (prefill.code) return `Werkstoff ${prefill.code}`;
-  return '';
+function getSimplePrefillTopic(prefill, produkte = [], anwendungsgebiete = [], werkstoffe = []) {
+  const path = typeof window !== 'undefined' ? window.location.pathname : '/';
+
+  if (prefill) {
+    if (typeof prefill === 'string') return prefill;
+    if (prefill.requestPrefill) return prefill.requestPrefill;
+    if (prefill.code && prefill.name) return `${prefill.code} – ${prefill.name}`;
+    if (prefill.title) return prefill.title;
+    if (prefill.name) return prefill.name;
+  }
+
+  if (path.startsWith('/produkte')) {
+    const slug = path.replace('/produkte/', '').replace('/produkte', '').replace(/\/$/, '');
+    const found = slug ? produkte.find((p) => p.id === slug) : null;
+    return found ? found.title : 'Produktauslegung & Behälterbau nach Maß';
+  }
+
+  if (path.startsWith('/anwendungsgebiete')) {
+    const slug = path.replace('/anwendungsgebiete/', '').replace('/anwendungsgebiete', '').replace(/\/$/, '');
+    const found = slug ? anwendungsgebiete.find((a) => a.id === slug) : null;
+    return found ? found.title : 'Branchen- & Prozessanlagenauslegung';
+  }
+
+  if (path.startsWith('/werkstoffe')) {
+    const slug = path.replace('/werkstoffe/', '').replace('/werkstoffe', '').replace(/\/$/, '');
+    const found = slug ? werkstoffe.find((w) => w.id === slug) : null;
+    return found ? `${found.code} – ${found.name}` : 'Werkstoffberatung & Beständigkeitsprüfung (DVS 2205)';
+  }
+
+  return 'Allgemeine Projekt- & Angebotsanfrage';
 }
 
 export default function RequestModal({ isOpen, onClose, prefill }) {
+  const { produkte = [], anwendungsgebiete = [], werkstoffe = [] } = useCms();
+
   const [formData, setFormData] = useState({
     company: '',
     name: '',
@@ -25,22 +50,18 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sync prefill when modal opens or prefill changes
   useEffect(() => {
     if (isOpen) {
       setSubmitted(false);
       setIsSubmitting(false);
-
-      if (prefill) {
-        setFormData(prev => ({
-          ...prev,
-          project: getCleanProjectTitle(prefill)
-        }));
-      }
+      const topic = getSimplePrefillTopic(prefill, produkte, anwendungsgebiete, werkstoffe);
+      setFormData((prev) => ({
+        ...prev,
+        project: topic
+      }));
     }
-  }, [isOpen, prefill]);
+  }, [isOpen, prefill, produkte, anwendungsgebiete, werkstoffe]);
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       const originalOverflow = document.body.style.overflow;
@@ -60,7 +81,7 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         fileName: e.target.files[0].name
       }));
@@ -77,42 +98,42 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 md:p-6 overflow-y-auto">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Dialog Card */}
-      <div 
-        className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden z-10 my-auto animate-in zoom-in-95 fade-in duration-200"
+      {/* Clean, Minimal Modal Card */}
+      <div
+        className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden z-10 my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Clean, Simple Header */}
-        <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-neutral-100 bg-white">
+        {/* Clean Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-200 bg-[#0d2a14] text-white">
           <div>
-            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
               Projekt anfragen
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Hauptwerk Minden · Unverbindliche Auslegung & Angebot
+            <p className="text-xs text-emerald-100/80 mt-0.5">
+              Unverbindliche Auslegung & Angebot direkt aus unserem Werk in Minden
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
             aria-label="Schließen"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 sm:p-8 max-h-[78vh] overflow-y-auto">
+        {/* Simple Form Body */}
+        <div className="p-6">
           {submitted ? (
-            <div className="py-8 text-center space-y-4">
+            <div className="py-6 text-center space-y-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-100 text-[#1c5f2e] flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
@@ -120,23 +141,36 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                 Vielen Dank für Ihre Anfrage!
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                Wir haben Ihre Daten erhalten. Unser technischer Vertrieb in Minden prüft Ihr Vorhaben und meldet sich zeitnah bei Ihnen.
+                Wir haben Ihre Anfrage zu <strong>{formData.project}</strong> erhalten. Unsere Projektingenieure melden sich kurzfristig bei Ihnen.
               </p>
-
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-6 py-2.5 bg-[#0c3319] hover:bg-[#154220] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                  className="px-6 py-2.5 bg-[#0d2a14] hover:bg-[#1c5f2e] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
                 >
-                  Fertig
+                  Schließen
                 </button>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              
-              {/* Company & Contact Name */}
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              {/* 1. Prefilled Topic */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Anfrage-Thema / Produkt
+                </label>
+                <input
+                  required
+                  type="text"
+                  placeholder="z. B. Rundbehälter 25 m³, Werkstoffberatung..."
+                  value={formData.project}
+                  onChange={(e) => setFormData({ ...formData, project: e.target.value })}
+                  className="w-full px-3.5 py-2 bg-[#FBF9F5] border border-neutral-200 rounded-lg text-xs sm:text-sm font-semibold text-slate-900 focus:bg-white focus:outline-none focus:border-[#1c5f2e] transition-colors"
+                />
+              </div>
+
+              {/* 2. Company & Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -145,7 +179,7 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                   <input
                     required
                     type="text"
-                    placeholder="Firma / Organisation"
+                    placeholder="Firma"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     className="w-full px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-[#1c5f2e] transition-colors"
@@ -154,12 +188,12 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Ansprechpartner *
+                    Ihr Name *
                   </label>
                   <input
                     required
                     type="text"
-                    placeholder="Name"
+                    placeholder="Vor- und Nachname"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-[#1c5f2e] transition-colors"
@@ -167,7 +201,7 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                 </div>
               </div>
 
-              {/* Email & Phone */}
+              {/* 3. Email & Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -176,7 +210,7 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                   <input
                     required
                     type="email"
-                    placeholder="name@unternehmen.de"
+                    placeholder="name@firma.de"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-[#1c5f2e] transition-colors"
@@ -198,40 +232,22 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                 </div>
               </div>
 
-              {/* Vorhaben / Produkt / Medium */}
+              {/* 4. Short Message */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Vorhaben / Produkt / Medium *
-                </label>
-                <input
-                  required
-                  type="text"
-                  placeholder="z. B. Rundbehälter 25 m³ für Salzsäure, Sonderbau..."
-                  value={formData.project}
-                  onChange={(e) => setFormData({ ...formData, project: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-[#1c5f2e] transition-colors"
-                />
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Ihre Nachricht (optional)
+                  Kurze Eckdaten / Nachricht (optional)
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="Maße, Konzentration, Einsatzort oder Zeitplan..."
+                  placeholder="Volumen, Medium, Maße oder Fragen..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   className="w-full px-3.5 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-[#1c5f2e] transition-colors"
                 />
               </div>
 
-              {/* File Attachment */}
+              {/* 5. Optional File Upload */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Dateianhang (optional)
-                </label>
                 <label className="flex items-center gap-2 px-3 py-2 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 text-xs text-slate-600 transition-colors">
                   {formData.fileName ? (
                     <span className="font-semibold text-slate-900 flex items-center gap-1.5">
@@ -241,25 +257,24 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                   ) : (
                     <>
                       <UploadCloud className="w-4 h-4 text-slate-400" />
-                      <span>Datei auswählen (PDF, STEP, DWG)</span>
+                      <span>Optional: Zeichnung oder Datenblatt anhängen (PDF, STEP, DWG)</span>
                     </>
                   )}
                   <input type="file" className="hidden" onChange={handleFileChange} />
                 </label>
               </div>
 
-              {/* Submit Button */}
-              <div className="pt-2">
+              {/* Submit */}
+              <div className="pt-1">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-2.5 bg-[#0c3319] hover:bg-[#154220] active:scale-[0.99] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 bg-[#0d2a14] hover:bg-[#1c5f2e] text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>{isSubmitting ? 'Wird übermittelt...' : 'Anfrage absenden'}</span>
+                  <span>{isSubmitting ? 'Wird gesendet...' : 'Anfrage absenden'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-
             </form>
           )}
         </div>

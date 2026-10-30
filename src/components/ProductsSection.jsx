@@ -1,175 +1,183 @@
-import React from 'react';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { ArrowRight, Ruler, ShieldCheck, Factory } from 'lucide-react';
 import { useCms } from '../data/cmsStore';
+import { R2_BASE } from '../data/weberData';
 
-export default function ProductsSection({ onNavigate, onRequestProduct }) {
+const PRODUCT_ADVANTAGES = [
+  {
+    icon: Ruler,
+    title: 'Maßanfertigung bis 100 m³',
+    desc: '3D-CAD-Konstruktion und prüffähige Statik nach DIN EN 12573 & DVS 2205.'
+  },
+  {
+    icon: ShieldCheck,
+    title: 'DIBt-Zulassung & § 62 AwSV',
+    desc: 'Bauaufsichtliche Zulassungen (Z-40.21 / Z-40.22) und TÜV-überwachter Fachbetrieb.'
+  },
+  {
+    icon: Factory,
+    title: '25.000 m² Werk & eigene Montage',
+    desc: 'Eigene Fertigung in Minden, Schwerlast-Tieflader und 25+ eigene Monteure.'
+  }
+];
+
+const FALLBACK_PRODUCT_PHOTOS = [
+  `${R2_BASE}/weber-kunststofftechnik-rundbehaelter05_09.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-rechteckbehaelter03_07.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-tanklager17_10.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-abluftreinigungsanlage02_01.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-dosieranlage01.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-gefahrstofflagerung01_04.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-rechteckbehaelter01.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-stahlbau02.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-montage04.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-logistik-transport15.webp`,
+  `${R2_BASE}/produktion-behaelter.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-rundbehaelter02.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-rechteckbehaelter05.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-abluftreinigungsanlage05.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-gefahrstofflagerung04.webp`,
+  `${R2_BASE}/weber-kunststofftechnik-montage10.webp`
+];
+
+export default function ProductsSection({ onNavigate }) {
   const { produkte } = useCms();
+  const allProducts = produkte || [];
 
-  // Die 4 großen Leit-Kategorien mit echten Werksfotos und die weiteren 7+ Produktbereiche darunter
-  const featuredProducts = (produkte || []).slice(0, 4);
-  const moreProducts = (produkte || []).slice(4);
+  // Build 2 rich rows of pure product photos without text or links
+  const { row1Images, row2Images } = useMemo(() => {
+    const collected = [];
+    const seen = new Set();
 
-  const handleOpenProduct = (e, prod) => {
-    if (e) e.preventDefault();
+    allProducts.forEach((p) => {
+      if (p.image && !seen.has(p.image)) {
+        seen.add(p.image);
+        collected.push(p.image);
+      }
+      if (Array.isArray(p.gallery)) {
+        p.gallery.slice(0, 2).forEach((imgUrl) => {
+          if (imgUrl && !seen.has(imgUrl)) {
+            seen.add(imgUrl);
+            collected.push(imgUrl);
+          }
+        });
+      }
+    });
+
+    const pool = (collected.length >= 12 ? collected : FALLBACK_PRODUCT_PHOTOS).slice(0, 12);
+    return {
+      row1Images: pool.slice(0, 6),
+      row2Images: pool.slice(6, 12)
+    };
+  }, [allProducts]);
+
+  const goToOverview = () => {
     if (onNavigate) {
-      onNavigate(`/produkte/${prod.id}`);
+      onNavigate('/produkte');
+    } else {
+      window.history.pushState({}, '', '/produkte');
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 
   return (
-    <section id="produkte" className="py-24 sm:py-32 bg-[#FBF9F5] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        
-        {/* Section Header im Stil des Heros (aufgeräumt, weitläufig, Sora-Typografie + Weber-Grün-Akzent) */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+    <section
+      id="produkte"
+      className="py-24 sm:py-32 bg-[#FBF9F5] border-b border-neutral-200 relative overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        {/* 1. Editorial Section Header with Discreet Text Link */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
           <div className="max-w-3xl">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Thermoplastische Lösungen für{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#166534] via-[#15803d] to-[#059669]">
-                Industrie und Anlagenbau.
-              </span>
+            <span className="text-xs font-mono font-semibold uppercase tracking-widest text-[#1c5f2e] block mb-3">
+              Fertigung & Leistungsspektrum
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
+              Maßgefertigter Behälter-, Apparate- und Anlagenbau.
             </h2>
-            <p className="text-base sm:text-lg text-neutral-600 mt-5 leading-relaxed max-w-2xl">
-              Wir konstruieren und fertigen bauartzugelassene Standardbehälter, Verbundbehälter und 
-              kundenspezifische Sonderapparate mit geprüften Schweißverfahren am Standort Minden.
+            <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+              Von zylindrischen Großlagertanks über stahlarmierte Prozess- und Beizbecken bis zu TA-Luft-Abluftwäschern: Bei Weber erhalten Sie Konstruktion, Fertigung, Schwerlastlogistik und Montage aus einer Hand.
             </p>
           </div>
 
           <div className="shrink-0">
-            <a
-              href="/downloads"
-              onClick={(e) => {
-                e.preventDefault();
-                if (onNavigate) onNavigate('/downloads');
-              }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-neutral-300 bg-white hover:border-weber-600 hover:text-weber-700 text-xs font-bold text-slate-800 transition-all shadow-2xs"
+            <button
+              type="button"
+              onClick={goToOverview}
+              className="group inline-flex items-center gap-2 text-sm font-bold text-[#1c5f2e] hover:text-[#0d2a14] transition-colors pb-1 border-b border-[#1c5f2e]/35 hover:border-[#0d2a14] cursor-pointer"
             >
-              <span>Gesamtkatalog & Zulassungen (PDF)</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+              <span>Alle {allProducts.length || 11} Produkte ansehen</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
 
-        {/* 4 Haupt-Produktkarten mit echten Weber-Werksfotos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 mb-14">
-          {featuredProducts.map((prod) => (
-            <div 
-              key={prod.id}
-              onClick={(e) => handleOpenProduct(e, prod)}
-              className="group bg-white rounded-2xl border border-neutral-200/90 hover:border-weber-600/50 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl cursor-pointer"
-            >
-              <div className="aspect-[16/10] overflow-hidden bg-neutral-900 relative">
-                <img 
-                  src={prod.image} 
-                  alt={prod.title} 
-                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+        {/* 2. Core Weber Product Advantages (3 Compact Columns with Subtle Hover) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+          {PRODUCT_ADVANTAGES.map((adv, idx) => {
+            const IconComp = adv.icon;
+            return (
+              <div
+                key={idx}
+                className="group relative bg-white rounded-2xl border border-neutral-200/90 hover:border-[#1c5f2e]/55 p-5 sm:p-6 shadow-xs hover:shadow-[0_16px_36px_-10px_rgba(28,95,46,0.14)] hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 overflow-hidden"
+              >
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#1c5f2e] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="w-11 h-11 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-[#1c5f2e] group-hover:bg-[#1c5f2e] group-hover:border-[#1c5f2e] group-hover:text-white flex items-center justify-center shrink-0 transition-all duration-300">
+                  <IconComp className="w-5 h-5" strokeWidth={1.75} />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-extrabold text-slate-900 group-hover:text-[#1c5f2e] transition-colors duration-300 leading-snug">
+                    {adv.title}
+                  </h3>
+                  <p className="text-xs sm:text-[13px] text-slate-600 leading-snug mt-1">
+                    {adv.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3. Full-Screen 2-Row Photo Slider Gallery (Nur reine Bilder, beide Reihen gleiche Richtung & leicht versetzt, ruhiges Tempo wie Karriere) */}
+      <div className="relative w-full overflow-hidden py-2 space-y-5">
+        {/* Obere Slider-Reihe */}
+        <div className="flex overflow-hidden">
+          <div className="animate-marquee-left flex gap-4 sm:gap-6 py-1">
+            {[...row1Images, ...row1Images].map((src, idx) => (
+              <div
+                key={`prod-img-r1-${idx}`}
+                className="w-[290px] sm:w-[390px] lg:w-[440px] h-[195px] sm:h-[250px] lg:h-[280px] shrink-0 rounded-2xl overflow-hidden border border-neutral-200/90 shadow-xs bg-slate-900"
+              >
+                <img
+                  src={src}
+                  alt="Kunststofftechnik Weber Produkt- und Behälterfertigung"
+                  loading="lazy"
+                  className="w-full h-full object-cover select-none pointer-events-none"
                 />
               </div>
-
-              <div className="p-8 sm:p-9 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="text-xs font-semibold text-weber-700 mb-1.5">
-                    {prod.subtitle}
-                  </div>
-                  <h3 className="text-2xl font-extrabold text-slate-900 mb-3 group-hover:text-weber-700 transition-colors">
-                    {prod.title}
-                  </h3>
-                  <p className="text-sm text-neutral-600 leading-relaxed mb-6">
-                    {prod.desc}
-                  </p>
-
-                  {prod.specs && (
-                    <div className="pt-4 pb-1 border-t border-neutral-100 space-y-1.5 text-xs">
-                      {prod.specs.slice(0, 4).map((sp, i) => {
-                        const colonIdx = sp.indexOf(':');
-                        const hasColon = colonIdx > -1 && colonIdx < 30;
-                        const label = hasColon ? sp.slice(0, colonIdx) : '';
-                        const val = hasColon ? sp.slice(colonIdx + 1).trim() : sp;
-
-                        return (
-                          <div key={i} className="flex items-start gap-2 text-xs leading-relaxed">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#1c5f2e] shrink-0 mt-1.5" />
-                            <div className="min-w-0">
-                              {hasColon ? (
-                                <>
-                                  <span className="font-bold text-slate-900">{label}:</span>{' '}
-                                  <span className="text-slate-600">{val}</span>
-                                </>
-                              ) : (
-                                <span className="font-medium text-slate-700">{sp}</span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-5 mt-5 border-t border-neutral-100 flex items-center justify-between gap-4">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1c5f2e] group-hover:text-emerald-800 transition-colors">
-                    <span>Produktseite & Werksfotos</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (onRequestProduct) onRequestProduct(prod);
-                    }}
-                    className="text-xs font-bold text-[#0c3319] hover:text-white bg-emerald-50 hover:bg-[#1c5f2e] border border-emerald-200/80 hover:border-[#1c5f2e] px-3.5 py-1.5 rounded-lg transition-all cursor-pointer shadow-2xs"
-                  >
-                    Direkt anfragen
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Weitere 7 Produktbereiche als großzügige, anklickbare Fachkarten */}
-        {moreProducts.length > 0 && (
-          <div className="pt-8 border-t border-neutral-200/80">
-            <div className="flex items-center justify-between mb-8">
-              <div className="text-xs font-extrabold text-slate-500 uppercase tracking-widest">
-                Weitere Produkt- & Leistungsbereiche im Überblick ({moreProducts.length})
+        {/* Untere Slider-Reihe (gleiche Richtung, um eine halbe Kartenbreite versetzt) */}
+        <div className="flex overflow-hidden">
+          <div className="animate-marquee-left flex gap-4 sm:gap-6 py-1 -ml-[155px] sm:-ml-[205px] lg:-ml-[230px]">
+            {[...row2Images, ...row2Images].map((src, idx) => (
+              <div
+                key={`prod-img-r2-${idx}`}
+                className="w-[290px] sm:w-[390px] lg:w-[440px] h-[195px] sm:h-[250px] lg:h-[280px] shrink-0 rounded-2xl overflow-hidden border border-neutral-200/90 shadow-xs bg-slate-900"
+              >
+                <img
+                  src={src}
+                  alt="Kunststofftechnik Weber Apparate- und Anlagenbau"
+                  loading="lazy"
+                  className="w-full h-full object-cover select-none pointer-events-none"
+                />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {moreProducts.map((prod) => (
-                <a
-                  key={prod.id}
-                  href={`/produkte/${prod.id}`}
-                  onClick={(e) => handleOpenProduct(e, prod)}
-                  className="group bg-white rounded-xl border border-neutral-200/90 hover:border-weber-600/60 p-5 flex items-start gap-4 transition-all hover:shadow-md"
-                >
-                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-neutral-100 shrink-0 border border-neutral-200">
-                    <img
-                      src={prod.image}
-                      alt={prod.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-base font-bold text-slate-900 group-hover:text-weber-700 transition-colors leading-snug mb-1">
-                      {prod.title}
-                    </h4>
-                    <p className="text-xs text-neutral-600 line-clamp-2 leading-relaxed mb-2.5">
-                      {prod.desc}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-weber-700">
-                      <span>Details & Fotos</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                    </span>
-                  </div>
-                </a>
-              ))}
-            </div>
+            ))}
           </div>
-        )}
-
+        </div>
       </div>
     </section>
   );

@@ -252,25 +252,40 @@ export default function DownloadsPage({ onNavigate }) {
             )}
           </div>
 
-          {/* Info Note on Custom Certificates */}
-          <div className="mt-16 bg-[#0d2a14] text-white rounded-2xl p-7 sm:p-8 border border-[#1c5f2e]/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="space-y-1.5 max-w-2xl">
-              <span className="text-xs font-mono uppercase tracking-widest text-emerald-300 block">
-                Projektbezogene Nachweise & Prüfzeugnisse
-              </span>
-              <h3 className="text-lg sm:text-xl font-bold">
-                Sie benötigen ein spezifisches DIBt-Prüfzeugnis oder eine Schweißerqualifikation nach DVS 2212-1?
-              </h3>
-              <p className="text-xs sm:text-sm text-emerald-100/80">
-                Einzelne bauaufsichtliche Zulassungen und Werksprüfzeugnisse 3.1 stellen wir Ihnen gerne projektbezogen zur Verfügung.
-              </p>
+          {/* Info Note on Custom Certificates (Vibrant Green + Hatched Dashed Accent) */}
+          <div
+            className="mt-16 text-white rounded-2xl p-7 sm:p-9 border border-[#1c5f2e]/60 relative overflow-hidden shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #389e54 0%, #2c8945 55%, #217036 100%)'
+            }}
+          >
+            <div
+              className="absolute inset-0 pointer-events-none select-none z-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.085) 0px, rgba(255, 255, 255, 0.085) 1.5px, transparent 1.5px, transparent 10px)`
+              }}
+            />
+            <div className="relative z-10 border border-dashed border-white/35 rounded-xl p-6 bg-[#071a0c]/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#071a0c] font-extrabold">
+                  <span className="w-5 h-[2px] bg-[#071a0c]" />
+                  <span>Projektbezogene Nachweise & Prüfzeugnisse:</span>
+                </div>
+                <h3 className="text-lg sm:text-2xl font-extrabold leading-snug">
+                  <span className="text-white">Sie benötigen ein spezifisches DIBt-Prüfzeugnis </span>
+                  <span className="text-[#071a0c]">oder eine Schweißerqualifikation nach DVS 2212-1?</span>
+                </h3>
+                <p className="text-xs sm:text-sm text-white/95">
+                  Einzelne bauaufsichtliche Zulassungen und Werksprüfzeugnisse 3.1 stellen wir Ihnen gerne projektbezogen zur Verfügung.
+                </p>
+              </div>
+              <a
+                href={`mailto:${COMPANY_FACTS.salesEmail}?subject=Anfrage%20Pruefzeugnis%20%2F%20Dokumentation`}
+                className="px-5 py-3.5 rounded-xl bg-white hover:bg-[#FBF9F5] text-[#071a0c] font-extrabold text-xs sm:text-sm shrink-0 transition-colors shadow-md"
+              >
+                Dokumentation anfordern &rarr;
+              </a>
             </div>
-            <a
-              href={`mailto:${COMPANY_FACTS.salesEmail}?subject=Anfrage%20Pruefzeugnis%20%2F%20Dokumentation`}
-              className="px-5 py-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-[#071a0c] font-bold text-xs sm:text-sm shrink-0 transition-colors"
-            >
-              Dokumentation anfordern &rarr;
-            </a>
           </div>
 
         </div>

@@ -23,7 +23,7 @@ export const IMAGES = {
   heavyTransport: `${R2_BASE}/weber-schwerlast-transport-berlin.webp`,
   ctaRundbehaelter: `${R2_BASE}/weber-cta-rundbehaelter-hd.webp`,
   ctaTanklager: `${R2_BASE}/weber-cta-tanklager-hd.webp`,
-  ctaBehaelterCrane: `${R2_BASE}/weber-cta-behaelter-crane-hd.webp`,
+  ctaBehaelterCrane: `${R2_BASE}/weber-cta-tanklager04-hd.webp`,
 
   // Luftbilder & Werk
   luftbild2025: `${R2_BASE}/luftbild-weber-kunststofftechnik-2025.webp`,
@@ -1501,28 +1501,28 @@ export const INITIAL_AUSBILDUNGEN = [
 
 export const EMPLOYER_BENEFITS = [
   {
-    title: "Planbare Arbeitszeiten & Tagschicht",
-    desc: "38,5-Std.-Woche in geregelter Tagschicht. Verlässlicher Feierabend, freie Wochenenden und keine Rufbereitschaft."
+    title: "Planbare Tagschicht",
+    desc: "38,5-Std.-Woche, freie Wochenenden und keine Rufbereitschaft."
   },
   {
     title: "Pünktliche & faire Vergütung",
-    desc: "Sicheres Einkommen mit tariflicher Orientierung, regelmäßigen Zulagen sowie Urlaubs- und Weihnachtsgeld."
+    desc: "Tariflich orientiertes Gehalt, Zulagen sowie Urlaubs- und Weihnachtsgeld."
   },
   {
     title: "Fester Standort in Minden",
-    desc: "Morgens hin, abends daheim. Feste Arbeitsstätte am Mitteldamm 65a – keine Dauermontage, keine Hotelketten."
+    desc: "Morgens hin, abends daheim – keine Dauermontage, keine Hotelketten."
   },
   {
-    title: "50+ Jahre Arbeitsplatzsicherheit",
-    desc: "Unbefristete Festanstellung in einem kerngesunden, inhabergeführten Familienunternehmen mit rund 270 Kolleginnen und Kollegen."
+    title: "55+ Jahre Jobsicherheit",
+    desc: "Unbefristete Festanstellung im kerngesunden Familienunternehmen."
   },
   {
-    title: "Einarbeitung mit persönlichem Paten",
-    desc: "3 Monate Begleitung durch erfahrene Fachkräfte. Wir lernen Sie fundiert in thermoplastische Fügetechniken ein."
+    title: "Einarbeitung mit festem Paten",
+    desc: "3 Monate intensive Begleitung durch erfahrene Fachkräfte."
   },
   {
-    title: "Modernste 25.000 m² Werkhallen",
-    desc: "Helle Hallen, moderne Schwerlastkrane, topaktuelle Schweißgeräte, funktionierendes Profi-Werkzeug und gestellte Arbeitskleidung."
+    title: "Moderne 25.000 m² Werkhallen",
+    desc: "Helle Hallen, 20-t-Krane, Top-Werkzeug und gestellte Arbeitskleidung."
   }
 ];
 

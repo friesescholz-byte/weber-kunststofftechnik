@@ -16,10 +16,20 @@ export default function SpecialCtaButton({
   const chamferCut = isSm ? '16px' : '24px';
   const clipPathStyle = `polygon(0% 0%, calc(100% - ${chamferCut}) 0%, 100% ${chamferCut}, 100% 100%, 0% 100%)`;
 
+  const handleClick = (e) => {
+    if (onClick) {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick(e);
+    }
+  };
+
   return (
     <a
-      href={href}
-      onClick={onClick}
+      href={onClick ? undefined : href}
+      role={onClick ? "button" : undefined}
+      tabIndex={0}
+      onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`relative inline-flex items-center group cursor-pointer select-none focus:outline-none shrink-0 ${

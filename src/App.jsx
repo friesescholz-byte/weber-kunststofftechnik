@@ -13,6 +13,7 @@ import RequestModal from './components/RequestModal';
 import Footer from './components/Footer';
 
 import DetailSubpage from './pages/DetailSubpage';
+import CatalogOverviewPage from './pages/CatalogOverviewPage';
 import CompanyPage from './pages/CompanyPage';
 import DownloadsPage from './pages/DownloadsPage';
 import CareerPage from './pages/CareerPage';
@@ -49,9 +50,12 @@ function AppRouter() {
     return () => document.removeEventListener('click', handleGlobalClick);
   }, [openRequestModal]);
 
+  const [routeSearch, setRouteSearch] = useState(() => window.location.search);
+
   useEffect(() => {
     const onPopState = () => {
       setCurrentPath(window.location.pathname);
+      setRouteSearch(window.location.search);
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
@@ -60,21 +64,20 @@ function AppRouter() {
   const navigate = useCallback((target) => {
     if (!target) return;
 
-    // Handle hash links on home or subpages (e.g., '/ueber-uns#standorte' or '/#anfrage')
-    const [pathPart, hashPart] = target.split('#');
-    const cleanPath = pathPart || '/';
+    // Handle hash links and query params on home or subpages (e.g., '/anwendungsgebiete?kategorie=chemie-lager#katalog' or '/werkstoffe#medien-check')
+    const [pathAndQuery, hashPart] = target.split('#');
+    const [rawPath, queryPart] = (pathAndQuery || '/').split('?');
+    const cleanPath = rawPath || '/';
+    const newSearch = queryPart ? `?${queryPart}` : '';
 
     if (hashPart === 'anfrage') {
       openRequestModal();
       return;
     }
 
-    if (cleanPath !== window.location.pathname) {
-      window.history.pushState({}, '', target);
-      setCurrentPath(cleanPath);
-    } else if (hashPart) {
-      window.history.pushState({}, '', target);
-    }
+    window.history.pushState({}, '', target);
+    setCurrentPath(cleanPath);
+    setRouteSearch(newSearch);
 
     if (hashPart) {
       setTimeout(() => {
@@ -82,7 +85,7 @@ function AppRouter() {
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
         }
-      }, 100);
+      }, 120);
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -107,23 +110,15 @@ function AppRouter() {
       navigate('/ueber-uns');
       return;
     }
-
-    // Default: navigate to home section
-    if (window.location.pathname !== '/') {
-      navigate('/');
+    if (q.includes('behaelter') || q.includes('tank') || q.includes('abluft') || q.includes('produkt')) {
+      navigate('/produkte');
+      return;
     }
-    setTimeout(() => {
-      if (q.includes('behaelter') || q.includes('tank') || q.includes('abluft') || q.includes('rohr') || q.includes('produkt')) {
-        document.getElementById('produkte')?.scrollIntoView({ behavior: 'smooth' });
-        showNotification(`Ergebnisse für „${query}“ unter Produkte.`);
-      } else if (q.includes('pe') || q.includes('pp') || q.includes('pvc') || q.includes('pvdf') || q.includes('werkstoff')) {
-        document.getElementById('werkstoffe')?.scrollIntoView({ behavior: 'smooth' });
-        showNotification(`Werkstoffinformationen für „${query}“ unter Werkstoffe.`);
-      } else {
-        document.getElementById('anwendungsgebiete')?.scrollIntoView({ behavior: 'smooth' });
-        showNotification(`Anwendungsgebiete & Lösungen für „${query}“.`);
-      }
-    }, 120);
+    if (q.includes('pe') || q.includes('pp') || q.includes('pvc') || q.includes('pvdf') || q.includes('werkstoff')) {
+      navigate('/werkstoffe');
+      return;
+    }
+    navigate('/anwendungsgebiete');
   };
 
   const handleCategorySelection = (catItem) => {
@@ -171,6 +166,20 @@ function AppRouter() {
         onOpenRequestModal={openRequestModal}
       />
     );
+  } else if (
+    (firstSeg === 'anwendungsgebiete' ||
+      firstSeg === 'produkte' ||
+      firstSeg === 'werkstoffe') &&
+    !secondSeg
+  ) {
+    pageContent = (
+      <CatalogOverviewPage
+        type={firstSeg}
+        routeSearch={routeSearch}
+        onNavigate={navigate}
+        onOpenRequestModal={openRequestModal}
+      />
+    );
   } else if (firstSeg === 'ueber-uns' || firstSeg === 'unternehmen') {
     pageContent = (
       <CompanyPage 
@@ -196,41 +205,25 @@ function AppRouter() {
         {/* 2. Trust Bar */}
         <TrustBar />
 
-        {/* 3. Products (All 11 Products + Subpage Links & Pre-filled Modal Triggers) */}
+        {/* 3. Products (Concise Homepage Overview + Link to /produkte) */}
         <ProductsSection
           onNavigate={navigate}
-          onRequestProduct={(prod) => {
-            openRequestModal({
-              title: prod.title,
-              subtitle: prod.subtitle,
-              type: 'produkt'
-            });
-          }}
+          onOpenRequestModal={openRequestModal}
         />
 
-        {/* 4. Materials (All 7 Materials + Chemical Matrix + Pre-filled Modal Triggers) */}
+        {/* 4. Materials (Concise Homepage Overview + Link to /werkstoffe) */}
         <MaterialsSection
           onNavigate={navigate}
-          onRequestMaterial={(mat) => {
-            openRequestModal({
-              title: mat.title || `Werkstoff ${mat.name || mat.code}`,
-              type: 'werkstoff'
-            });
-          }}
+          onOpenRequestModal={openRequestModal}
         />
 
         {/* 5. Manufacturing Depth & Welding Facility Minden */}
         <ManufacturingDepth onNavigate={navigate} />
 
-        {/* 6. Industries / Anwendungsgebiete (All 12 Areas + Pre-filled Modal Triggers) */}
+        {/* 6. Industries / Anwendungsgebiete (Concise Homepage Overview + Link to /anwendungsgebiete) */}
         <IndustriesSection
           onNavigate={navigate}
-          onSelectIndustry={(ind) => {
-            openRequestModal({
-              title: ind.title,
-              type: 'anwendungsgebiet'
-            });
-          }}
+          onOpenRequestModal={openRequestModal}
         />
 
         {/* 7. Editorial Quality Statement */}

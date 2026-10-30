@@ -38,37 +38,34 @@ export default function Footer({ onNavigate, onOpenRequestModal }) {
             <a 
               href="/" 
               onClick={(e) => handleNav(e, '/')}
-              className="inline-flex items-center gap-3 group"
+              className="inline-flex items-center group"
             >
               <img 
-                src={IMAGES.favicon} 
-                alt="Weber" 
-                className="w-9 h-9 rounded bg-white p-1"
+                src="https://pub-b33108412309406a9a941ddc51e9a5b9.r2.dev/Weber-Kunststaofftechnik/weber-logo-clean.webp" 
+                alt="Kunststofftechnik Weber GmbH" 
+                className="h-11 sm:h-12 md:h-14 w-auto object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] group-hover:opacity-90 transition-opacity"
               />
-              <span className="text-base sm:text-lg font-extrabold text-white tracking-tight group-hover:text-emerald-300 transition-colors">
-                KUNSTSTOFFTECHNIK WEBER GMBH
-              </span>
             </a>
 
             {/* Die 3 Kernbereiche: Produkte · Werkstoffe · Anwendungsgebiete */}
             <div className="flex flex-wrap items-center gap-2 pt-0.5">
               <a
-                href="/#produkte"
-                onClick={(e) => handleSectionScroll(e, 'produkte')}
+                href="/produkte"
+                onClick={(e) => handleNav(e, '/produkte')}
                 className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/5 hover:bg-emerald-600/30 border border-white/15 hover:border-emerald-400/50 text-white font-semibold text-xs transition-all"
               >
                 <span>Produkte</span>
               </a>
               <a
-                href="/#werkstoffe"
-                onClick={(e) => handleSectionScroll(e, 'werkstoffe')}
+                href="/werkstoffe"
+                onClick={(e) => handleNav(e, '/werkstoffe')}
                 className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/5 hover:bg-emerald-600/30 border border-white/15 hover:border-emerald-400/50 text-white font-semibold text-xs transition-all"
               >
                 <span>Werkstoffe</span>
               </a>
               <a
-                href="/#anwendungsgebiete"
-                onClick={(e) => handleSectionScroll(e, 'anwendungsgebiete')}
+                href="/anwendungsgebiete"
+                onClick={(e) => handleNav(e, '/anwendungsgebiete')}
                 className="inline-flex items-center px-3 py-1.5 rounded-lg bg-white/5 hover:bg-emerald-600/30 border border-white/15 hover:border-emerald-400/50 text-white font-semibold text-xs transition-all"
               >
                 <span>Anwendungsgebiete</span>
@@ -89,8 +86,8 @@ export default function Footer({ onNavigate, onOpenRequestModal }) {
             <ul className="space-y-2 text-neutral-300">
               <li>
                 <a 
-                  href="/#produkte" 
-                  onClick={(e) => handleSectionScroll(e, 'produkte')}
+                  href="/produkte" 
+                  onClick={(e) => handleNav(e, '/produkte')}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5"
                 >
                   <ArrowRight className="w-3 h-3 text-emerald-400" />
@@ -99,8 +96,8 @@ export default function Footer({ onNavigate, onOpenRequestModal }) {
               </li>
               <li>
                 <a 
-                  href="/#werkstoffe" 
-                  onClick={(e) => handleSectionScroll(e, 'werkstoffe')}
+                  href="/werkstoffe" 
+                  onClick={(e) => handleNav(e, '/werkstoffe')}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5"
                 >
                   <ArrowRight className="w-3 h-3 text-emerald-400" />
@@ -109,8 +106,8 @@ export default function Footer({ onNavigate, onOpenRequestModal }) {
               </li>
               <li>
                 <a 
-                  href="/#anwendungsgebiete" 
-                  onClick={(e) => handleSectionScroll(e, 'anwendungsgebiete')}
+                  href="/anwendungsgebiete" 
+                  onClick={(e) => handleNav(e, '/anwendungsgebiete')}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5"
                 >
                   <ArrowRight className="w-3 h-3 text-emerald-400" />

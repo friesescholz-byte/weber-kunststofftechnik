@@ -56,7 +56,12 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
         <p className="text-sm text-slate-600 max-w-md mb-8">
           Bitte wählen Sie einen Bereich aus der Navigation oder kehren Sie zur Startseite zurück.
         </p>
-        <SpecialCtaButton text="Zurück zur Startseite" onClick={() => onNavigate('/')} />
+        <button
+          onClick={() => onNavigate('/')}
+          className="px-6 py-3 rounded-xl bg-[#0d2a14] hover:bg-[#1c5f2e] text-white font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+        >
+          Zurück zur Startseite
+        </button>
       </div>
     );
   }
@@ -255,8 +260,8 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
             </button>
             <span className="text-emerald-500/50">/</span>
             <button
-              onClick={() => onNavigate(`/#${type}`)}
-              className="hover:text-white transition-colors"
+              onClick={() => onNavigate(`/${type}`)}
+              className="hover:text-white transition-colors cursor-pointer"
             >
               {type === 'anwendungsgebiete' ? 'Anwendungsgebiete' : type === 'produkte' ? 'Produkte' : 'Werkstoffe'}
             </button>
@@ -368,8 +373,8 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
                   </h2>
                 </div>
 
-                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                  {item.description || item.desc}
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed whitespace-pre-line">
+                  {item.longDesc || item.description || item.desc}
                 </p>
 
                 {/* Features / Highlights List */}
@@ -408,39 +413,74 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
                   </div>
                 )}
 
+                {/* Applications for Werkstoffe */}
+                {item.applications && item.applications.length > 0 && (
+                  <div className="pt-4 border-t border-neutral-100">
+                    <h3 className="text-xs font-mono uppercase tracking-wider font-bold text-slate-800 mb-3">
+                      Typische Bauteile & Anwendungen
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {item.applications.map((app, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1.5 rounded-lg bg-[#0d2a14]/5 border border-[#1c5f2e]/20 text-xs font-semibold text-[#0d2a14]"
+                        >
+                          {app}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
 
-              {/* Direct Engineering Contact Card */}
-              <div className="bg-[#0d2a14] text-white rounded-2xl p-6 sm:p-7 border border-[#1c5f2e]/50 space-y-4">
-                <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-300 block">
-                  Projektberatung & Statik
-                </span>
-                <h3 className="text-lg font-bold">
-                  Sie planen ein Vorhaben im Bereich {item.title || item.code}?
-                </h3>
-                <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed">
-                  Unsere Projektingenieure in Minden unterstützen Sie bei Werkstoffwahl, Aufstellungsplanung und statischer Vorbemessung.
-                </p>
-                <div className="pt-1 flex flex-wrap gap-3">
-                  <button
-                    onClick={() => {
-                      if (onOpenRequestModal) {
-                        onOpenRequestModal(item);
-                      } else {
-                        document.getElementById('anfrage')?.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }}
-                    className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#071a0c] font-bold text-xs transition-colors cursor-pointer"
-                  >
-                    Jetzt Spezifikation senden
-                  </button>
-                  <button
-                    onClick={() => onNavigate('/downloads')}
-                    className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-colors flex items-center gap-1.5"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>Zertifikate & Prospekte</span>
-                  </button>
+              {/* Direct Engineering Contact Card (Vibrant Green + Hatched Dashed Accent) */}
+              <div
+                className="text-white rounded-2xl p-6 sm:p-7 border border-[#1c5f2e]/60 space-y-4 relative overflow-hidden shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, #389e54 0%, #2c8945 55%, #217036 100%)'
+                }}
+              >
+                <div
+                  className="absolute inset-0 pointer-events-none select-none z-0"
+                  style={{
+                    backgroundImage: `repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.085) 0px, rgba(255, 255, 255, 0.085) 1.5px, transparent 1.5px, transparent 10px)`
+                  }}
+                />
+                <div className="relative z-10 space-y-3 border border-dashed border-white/35 rounded-xl p-5 bg-[#071a0c]/10">
+                  <div className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-[#071a0c] font-extrabold">
+                    <span className="w-5 h-[2px] bg-[#071a0c]" />
+                    <span>Projektberatung & Statik:</span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-extrabold leading-snug">
+                    <span className="text-white">Sie planen ein Vorhaben im Bereich </span>
+                    <span className="text-[#071a0c]">{item.title || item.code}?</span>
+                  </h3>
+                  <p className="text-xs sm:text-sm text-white/95 leading-relaxed">
+                    Unsere Projektingenieure in Minden unterstützen Sie bei{' '}
+                    <strong className="font-extrabold text-white">Werkstoffwahl, Aufstellungsplanung und statischer Vorbemessung</strong>.
+                  </p>
+                  <div className="pt-2 flex flex-wrap gap-3">
+                    <button
+                      onClick={() => {
+                        if (onOpenRequestModal) {
+                          onOpenRequestModal(item);
+                        } else {
+                          document.getElementById('anfrage')?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-white hover:bg-[#FBF9F5] text-[#071a0c] font-extrabold text-xs transition-colors shadow-sm cursor-pointer"
+                    >
+                      Jetzt Spezifikation senden
+                    </button>
+                    <button
+                      onClick={() => onNavigate('/downloads')}
+                      className="px-4 py-2.5 rounded-xl bg-[#071a0c]/25 hover:bg-[#071a0c]/40 border border-dashed border-white/40 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Zertifikate & Prospekte</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -530,11 +570,11 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
               </h2>
             </div>
             <button
-              onClick={() => onNavigate('/')}
-              className="text-xs font-bold text-[#1c5f2e] hover:underline flex items-center gap-1.5"
+              onClick={() => onNavigate(`/${type}`)}
+              className="text-xs font-bold text-[#1c5f2e] hover:underline flex items-center gap-1.5 cursor-pointer"
             >
               <Layers className="w-4 h-4" />
-              <span>Zurück zur Hauptübersicht</span>
+              <span>Alle {type === 'anwendungsgebiete' ? 'Anwendungsgebiete' : type === 'produkte' ? 'Produkte' : 'Werkstoffe'} im Überblick</span>
             </button>
           </div>
 

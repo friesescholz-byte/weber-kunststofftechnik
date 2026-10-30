@@ -1,7 +1,6 @@
 import React from 'react';
 import { ArrowRight, Ruler, Factory, ShieldCheck, Truck } from 'lucide-react';
 import { IMAGES } from '../data/weberData';
-import SpecialCtaButton from './SpecialCtaButton';
 
 export default function ManufacturingDepth({ onNavigate }) {
   const steps = [
@@ -28,8 +27,27 @@ export default function ManufacturingDepth({ onNavigate }) {
   ];
 
   return (
-    <section id="fertigung" className="py-24 sm:py-32 bg-[#FBF9F5] border-b border-neutral-200/80 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section id="fertigung" className="pt-24 sm:pt-32 pb-16 sm:pb-20 bg-[#FBF9F5] relative overflow-hidden">
+      {/* Fortgeführtes Hintergrundmuster aus dem Werkstoff-Abschnitt (in dezentem Schwarz ohne grünen Hintergrund) */}
+      <div
+        className="absolute inset-0 pointer-events-none select-none z-0"
+        style={{
+          backgroundImage: `
+            repeating-linear-gradient(
+              135deg,
+              rgba(0, 0, 0, 0.04) 0px,
+              rgba(0, 0, 0, 0.04) 1.5px,
+              transparent 1.5px,
+              transparent 11px
+            ),
+            linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px)
+          `,
+          backgroundSize: 'auto, 44px 44px, 44px 44px'
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
@@ -72,13 +90,18 @@ export default function ManufacturingDepth({ onNavigate }) {
             </div>
 
             <div className="pt-2 flex flex-wrap items-center gap-4">
-              <SpecialCtaButton 
-                text="Einblick in unser Werk & Zertifikate" 
-                onClick={() => onNavigate && onNavigate('/ueber-uns')} 
-              />
               <button
+                type="button"
+                onClick={() => onNavigate && onNavigate('/ueber-uns')}
+                className="group h-[48px] px-6 rounded-xl bg-[#0d2a14] hover:bg-[#1c5f2e] text-white font-bold text-xs sm:text-sm transition-colors inline-flex items-center justify-center gap-2.5 shrink-0 shadow-xs cursor-pointer"
+              >
+                <span>Einblick in unser Werk & Zertifikate</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button
+                type="button"
                 onClick={() => onNavigate && onNavigate('/downloads')}
-                className="h-[52px] px-6 rounded-xl border border-neutral-300 bg-white hover:border-[#1c5f2e] text-slate-800 font-bold text-xs sm:text-sm transition-colors inline-flex items-center justify-center shrink-0 shadow-xs"
+                className="h-[48px] px-6 rounded-xl border border-neutral-300 bg-white hover:border-[#1c5f2e] text-slate-800 font-bold text-xs sm:text-sm transition-colors inline-flex items-center justify-center shrink-0 shadow-xs cursor-pointer"
               >
                 Zertifikate herunterladen (PDF)
               </button>
@@ -93,12 +116,6 @@ export default function ManufacturingDepth({ onNavigate }) {
                 alt="Luftaufnahme Kunststofftechnik Weber GmbH Hauptwerk Minden" 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#092211]/80 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-5 right-5 text-white">
-                <span className="text-xs sm:text-sm font-bold bg-[#0d2a14]/90 border border-emerald-400/30 px-3 py-1.5 rounded-lg text-white backdrop-blur-xs inline-block">
-                  Über 25.000 m² Produktions- & Hallenfläche
-                </span>
-              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

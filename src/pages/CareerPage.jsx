@@ -267,6 +267,38 @@ export default function CareerPage({ onNavigate }) {
         </div>
       </section>
 
+      {/* Schicker Homepage-Übergangsstreifen (Stahlbau-Fachwerk) */}
+      <div className="relative w-full h-[50px] sm:h-[52px] overflow-hidden pointer-events-none select-none bg-[#092211] border-b border-[#1c5f2e]/35 shadow-[0_4px_16px_rgba(0,0,0,0.16)] z-10">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="steelCareerHeroPattern" width="160" height="52" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="160" y2="0" stroke="rgba(34, 197, 94, 0.16)" strokeWidth="0.8" />
+              <line x1="0" y1="26" x2="160" y2="26" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
+              <line x1="0" y1="52" x2="160" y2="52" stroke="rgba(34, 197, 94, 0.16)" strokeWidth="0.8" />
+              <line x1="0" y1="0" x2="0" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="32" y1="0" x2="32" y2="52" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
+              <line x1="64" y1="0" x2="64" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="96" y1="0" x2="96" y2="52" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
+              <line x1="128" y1="0" x2="128" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="160" y1="0" x2="160" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="2" y1="2" x2="30" y2="24" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <line x1="94" y1="2" x2="66" y2="24" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <line x1="34" y1="28" x2="62" y2="50" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <line x1="158" y1="28" x2="130" y2="50" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <circle cx="32" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
+              <circle cx="96" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
+              <circle cx="128" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
+              <rect x="34" y="2" width="28" height="22" rx="1.5" fill="rgba(34, 197, 94, 0.07)" stroke="rgba(74, 222, 128, 0.28)" strokeWidth="0.75" />
+              <rect x="98" y="28" width="28" height="22" rx="1.5" fill="rgba(21, 128, 61, 0.1)" stroke="rgba(34, 197, 94, 0.22)" strokeWidth="0.75" />
+              <rect x="130" y="2" width="28" height="22" rx="1.5" fill="rgba(34, 197, 94, 0.03)" stroke="rgba(74, 222, 128, 0.15)" strokeWidth="0.75" strokeDasharray="2 2" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#steelCareerHeroPattern)" />
+        </svg>
+        <div className="absolute inset-y-0 left-0 w-28 sm:w-40 bg-gradient-to-r from-[#092211] to-transparent pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-28 sm:w-40 bg-gradient-to-l from-[#092211] to-transparent pointer-events-none" />
+      </div>
+
       {/* 2. Section: Wir als Arbeitgeber & Benefits (Directly after Hero, compact & clear) */}
       <section id="benefits" className="py-14 sm:py-20 bg-[#FBF9F5] border-b border-neutral-200/90 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -571,18 +603,43 @@ export default function CareerPage({ onNavigate }) {
         </div>
       </section>
 
-      {/* 3. Section: Ausbildungsangebote in Minden */}
-      <section id="ausbildung" className="py-20 sm:py-28 bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      {/* 3. Section: Ausbildungsangebote in Minden (Special Green Background wie beim CTA) */}
+      <section
+        id="ausbildung"
+        className="py-20 sm:py-28 border-t border-b border-[#1c5f2e]/60 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #389e54 0%, #2c8945 55%, #217036 100%)'
+        }}
+      >
+        {/* Dezent gestrichelter / schraffierter Diagonal-Akzent im Hintergrund */}
+        <div
+          className="absolute inset-0 pointer-events-none select-none z-0"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.085) 0px,
+                rgba(255, 255, 255, 0.085) 1.5px,
+                transparent 1.5px,
+                transparent 10px
+              )
+            `
+          }}
+        />
+        <div className="absolute top-4 inset-x-6 lg:inset-x-12 border-t border-dashed border-white/30 pointer-events-none z-0" />
+        <div className="absolute bottom-4 inset-x-6 lg:inset-x-12 border-b border-dashed border-white/30 pointer-events-none z-0" />
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mb-12">
-            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-[#1c5f2e] mb-3">
-              <span className="w-6 h-[2px] bg-[#1c5f2e]" />
+            <div className="inline-flex items-center gap-2.5 text-[11px] font-mono font-extrabold uppercase tracking-[0.2em] text-[#071a0c] mb-3">
+              <span className="w-6 h-[2.5px] bg-[#071a0c]" />
               <span>Ausbildung & Nachwuchsförderung</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-              Ausbildungsangebote am Standort Minden
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1]">
+              <span className="text-white block">Ausbildungsangebote</span>
+              <span className="text-[#071a0c] block mt-0.5">am Standort Minden</span>
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 mt-4 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/95 mt-4 leading-relaxed">
               Wir bilden unseren Fachkräftenachwuchs selbst aus – mit engmaschiger Betreuung durch erfahrene Ausbilder, 
               attraktiver Ausbildungsvergütung und besten Übernahmechancen nach erfolgreichem Abschluss.
             </p>
@@ -592,7 +649,7 @@ export default function CareerPage({ onNavigate }) {
             {ausbildungen.map((ausb) => (
               <div
                 key={ausb.id}
-                className="bg-[#FBF9F5] rounded-2xl border border-neutral-200/90 overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl border-2 border-white/95 shadow-[0_20px_50px_rgba(7,26,12,0.22)] overflow-hidden flex flex-col justify-between hover:-translate-y-1 transition-all duration-300"
               >
                 <div>
                   {/* Clean Ausbildungs Image: STRICTLY NO TAGS INSIDE IMAGE */}
@@ -649,7 +706,7 @@ export default function CareerPage({ onNavigate }) {
                       setApplyModalJob(ausb);
                       setAppSubmitted(false);
                     }}
-                    className="w-full py-3 rounded-xl bg-[#0d2a14] hover:bg-[#1c5f2e] text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs"
+                    className="w-full py-3 rounded-xl bg-[#0d2a14] hover:bg-[#1c5f2e] text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                   >
                     <span>Auf Ausbildungsplatz bewerben</span>
                     <ArrowRight className="w-4 h-4" />
@@ -662,11 +719,10 @@ export default function CareerPage({ onNavigate }) {
       </section>
 
       {/* 5. Section: Echte Einblicke & Fotogalerie Stammwerk Minden */}
-      <section id="werkstatt" className="py-20 sm:py-28 bg-[#FBF9F5] border-t border-neutral-200/90">
+      <section id="werkstatt" className="py-20 sm:py-28 bg-[#FBF9F5] border-t border-neutral-200/90 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          
           {/* Header */}
-          <div className="max-w-3xl mb-12 sm:mb-16">
+          <div className="max-w-3xl mb-12 sm:mb-14">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-[#1c5f2e] mb-3">
               <span className="w-6 h-[2px] bg-[#1c5f2e]" />
               <span>Echte Einblicke · Stammwerk Minden</span>
@@ -678,54 +734,50 @@ export default function CareerPage({ onNavigate }) {
               Über 25.000 m² Werksfläche, eigene Schwerlastkrane bis 20 Tonnen und ein starkes Team aus 270 Fachkräften am Mitteldamm 65a.
             </p>
           </div>
+        </div>
 
-          {/* 1. Doppelte Bilder Slider Galerie: 2 gegenläufig gleitende Reihen ohne Text / Tags */}
-          <div className="relative -mx-6 lg:-mx-8 overflow-hidden py-4 space-y-4 mb-20 sm:mb-24">
-            
-            {/* Sanfte Ausblendungs-Verläufe an den Rändern für nahtlosen Übergang */}
-            <div className="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-[#FBF9F5] via-[#FBF9F5]/85 to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-[#FBF9F5] via-[#FBF9F5]/85 to-transparent z-10 pointer-events-none" />
-
-            {/* Reihe 1: Gleitet sanft nach links (8 hochauflösende Werksbilder nahtlos gedoppelt) */}
-            <div className="flex overflow-hidden">
-              <div className="animate-marquee-left flex gap-4 sm:gap-6 py-1">
-                {[...GALLERY_ROW_1, ...GALLERY_ROW_1].map((img, idx) => (
-                  <div 
-                    key={`r1-${idx}`}
-                    className="w-[280px] sm:w-[380px] lg:w-[420px] h-[190px] sm:h-[240px] lg:h-[270px] shrink-0 rounded-2xl overflow-hidden border border-neutral-200/90 shadow-xs hover:shadow-md hover:border-[#1c5f2e]/60 transition-all duration-300 bg-slate-900 group cursor-pointer"
-                  >
-                    <img 
-                      src={img.src} 
-                      alt={img.alt} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 select-none"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
+        {/* 1. Doppelte Bilder Slider Galerie: Full-Screen über die gesamte Bildschirmbreite ohne Abschneiden */}
+        <div className="relative w-full overflow-hidden py-3 space-y-5 mb-20 sm:mb-24">
+          {/* Reihe 1: Gleitet sanft nach links */}
+          <div className="flex overflow-hidden">
+            <div className="animate-marquee-left flex gap-4 sm:gap-6 py-1">
+              {[...GALLERY_ROW_1, ...GALLERY_ROW_1].map((img, idx) => (
+                <div 
+                  key={`r1-${idx}`}
+                  className="w-[290px] sm:w-[390px] lg:w-[440px] h-[195px] sm:h-[250px] lg:h-[280px] shrink-0 rounded-2xl overflow-hidden border border-neutral-200/90 shadow-xs hover:shadow-md hover:border-[#1c5f2e]/60 transition-all duration-300 bg-slate-900 group"
+                >
+                  <img 
+                    src={img.src} 
+                    alt={img.alt} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 select-none"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
             </div>
-
-            {/* Reihe 2: Gleitet sanft nach rechts (8 weitere Werksbilder nahtlos gedoppelt) */}
-            <div className="flex overflow-hidden">
-              <div className="animate-marquee-right flex gap-4 sm:gap-6 py-1">
-                {[...GALLERY_ROW_2, ...GALLERY_ROW_2].map((img, idx) => (
-                  <div 
-                    key={`r2-${idx}`}
-                    className="w-[280px] sm:w-[380px] lg:w-[420px] h-[190px] sm:h-[240px] lg:h-[270px] shrink-0 rounded-2xl overflow-hidden border border-neutral-200/90 shadow-xs hover:shadow-md hover:border-[#1c5f2e]/60 transition-all duration-300 bg-slate-900 group cursor-pointer"
-                  >
-                    <img 
-                      src={img.src} 
-                      alt={img.alt} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 select-none"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
           </div>
 
+          {/* Reihe 2: Gleitet in die gleiche Richtung (leicht versetzt) */}
+          <div className="flex overflow-hidden">
+            <div className="animate-marquee-left flex gap-4 sm:gap-6 py-1 -ml-[155px] sm:-ml-[205px] lg:-ml-[230px]">
+              {[...GALLERY_ROW_2, ...GALLERY_ROW_2].map((img, idx) => (
+                <div 
+                  key={`r2-${idx}`}
+                  className="w-[290px] sm:w-[390px] lg:w-[440px] h-[195px] sm:h-[250px] lg:h-[280px] shrink-0 rounded-2xl overflow-hidden border border-neutral-200/90 shadow-xs hover:shadow-md hover:border-[#1c5f2e]/60 transition-all duration-300 bg-slate-900 group"
+                >
+                  <img 
+                    src={img.src} 
+                    alt={img.alt} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 select-none"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* 2. Stimmen aus der Werkshalle (Real Employee Testimonials) */}
           <div className="pt-12 sm:pt-16 border-t border-neutral-200/80 mb-16 sm:mb-20">
             <div className="max-w-3xl mb-10">
@@ -782,35 +834,55 @@ export default function CareerPage({ onNavigate }) {
             </div>
           </div>
 
-          {/* 3. Unkomplizierter Express-Kontakt (48-Stunden-Rückmeldung) */}
-          <div className="bg-[#0d2a14] rounded-3xl p-8 sm:p-12 text-white border border-[#1c5f2e]/40 shadow-xl relative overflow-hidden">
+          {/* 3. Unkomplizierter Express-Kontakt (Vibrant Green + Hatched Dashed Accent) */}
+          <div
+            className="rounded-3xl p-8 sm:p-12 text-white border border-[#1c5f2e]/60 shadow-xl relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #389e54 0%, #2c8945 55%, #217036 100%)'
+            }}
+          >
+            <div
+              className="absolute inset-0 pointer-events-none select-none z-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.085) 0px, rgba(255, 255, 255, 0.085) 1.5px, transparent 1.5px, transparent 10px)`
+              }}
+            />
+            <div className="absolute top-4 inset-x-6 lg:inset-x-10 border-t border-dashed border-white/30 pointer-events-none z-0" />
+            <div className="absolute bottom-4 inset-x-6 lg:inset-x-10 border-b border-dashed border-white/30 pointer-events-none z-0" />
+
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-8 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#143d1f] border border-emerald-400/30 text-emerald-300 text-xs font-mono uppercase tracking-wider">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Schnellbewerbung · Kein langes Anschreiben</span>
+                <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-[#071a0c] font-extrabold">
+                  <span className="w-6 h-[2.5px] bg-[#071a0c]" />
+                  <span>Schnellbewerbung · Kein langes Anschreiben:</span>
                 </div>
-                <h3 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                  Klingt nach Ihrem neuen Arbeitsplatz? Dann melden Sie sich.
+                <h3 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                  <span className="text-white block">Klingt nach Ihrem neuen Arbeitsplatz?</span>
+                  <span className="text-[#071a0c] block mt-1">Dann melden Sie sich.</span>
                 </h3>
-                <p className="text-sm sm:text-base text-emerald-100/90 max-w-2xl leading-relaxed">
-                  Sie brauchen keinen formellen Lebenslauf und kein Anschreiben. Rufen Sie unsere Personalabteilung einfach kurz an oder senden Sie Ihre Kontaktdaten. Wir melden uns verlässlich innerhalb von 48 Stunden.
+                <p className="text-sm sm:text-base text-white/95 max-w-2xl leading-relaxed">
+                  Sie brauchen keinen formellen Lebenslauf und kein Anschreiben. Rufen Sie unsere Personalabteilung einfach kurz an oder senden Sie Ihre Kontaktdaten. Wir melden uns{' '}
+                  <strong className="font-extrabold text-white">verlässlich innerhalb von 48 Stunden</strong>.
                 </p>
-                
+
                 <div className="pt-2 flex flex-wrap items-center gap-4 text-xs sm:text-sm font-semibold">
-                  <a 
-                    href="tel:057195605269" 
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-[#071a0c] font-bold transition-colors"
+                  <a
+                    href="tel:057195605269"
+                    className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white hover:bg-[#FBF9F5] text-[#071a0c] font-extrabold transition-colors shadow-md"
                   >
-                    <Phone className="w-4 h-4" />
+                    <Phone className="w-4 h-4 text-[#1c5f2e]" />
                     <span>0571 95605-269 anrufen</span>
                   </a>
-                  <button 
+                  <button
                     onClick={() => {
-                      setApplyModalJob({ title: "Initiativ- & Schnellbewerbung Minden", department: "Fertigung / Montage / Verwaltung", location: "Minden" });
+                      setApplyModalJob({
+                        title: 'Initiativ- & Schnellbewerbung Minden',
+                        department: 'Fertigung / Montage / Verwaltung',
+                        location: 'Minden'
+                      });
                       setAppSubmitted(false);
                     }}
-                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-colors"
+                    className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-[#071a0c]/25 hover:bg-[#071a0c]/40 text-white border border-dashed border-white/40 transition-colors cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
                     <span>In 90 Sekunden online melden</span>
@@ -818,21 +890,21 @@ export default function CareerPage({ onNavigate }) {
                 </div>
               </div>
 
-              <div className="lg:col-span-4 bg-white/5 border border-white/10 rounded-2xl p-6 text-xs space-y-3">
-                <div className="flex items-center gap-3.5 pb-3 border-b border-white/10">
+              <div className="lg:col-span-4 bg-white rounded-2xl p-6 text-xs space-y-3 shadow-lg border border-dashed border-[#1c5f2e]/35 text-slate-900">
+                <div className="flex items-center gap-3.5 pb-3 border-b border-neutral-200">
                   <img
                     src={IMAGES.hrAnsprechpartnerin}
                     alt={COMPANY_FACTS.hrContact}
-                    className="w-12 h-12 rounded-xl object-cover border border-emerald-400/40 shrink-0 shadow-sm"
+                    className="w-12 h-12 rounded-xl object-cover border border-[#1c5f2e]/30 shrink-0 shadow-xs"
                   />
                   <div>
-                    <div className="font-bold text-white text-sm">{COMPANY_FACTS.hrContact}</div>
-                    <div className="text-emerald-300 text-[11px]">Personalwesen Weber Kunststofftechnik</div>
+                    <div className="font-extrabold text-slate-900 text-sm">{COMPANY_FACTS.hrContact}</div>
+                    <div className="text-[#1c5f2e] font-bold text-[11px]">Personalwesen · Standort Minden</div>
                   </div>
                 </div>
-                <div className="space-y-1 text-slate-300">
-                  <div>Telefon: {COMPANY_FACTS.hrPhone}</div>
-                  <div>E-Mail: {COMPANY_FACTS.hrEmail}</div>
+                <div className="space-y-1 text-slate-600 font-medium">
+                  <div>Telefon: <strong className="text-slate-900">{COMPANY_FACTS.hrPhone}</strong></div>
+                  <div>E-Mail: <strong className="text-slate-900">{COMPANY_FACTS.hrEmail}</strong></div>
                   <div>Mo–Fr: 07:30 – 16:30 Uhr</div>
                 </div>
               </div>

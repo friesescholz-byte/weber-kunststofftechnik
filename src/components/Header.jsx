@@ -233,8 +233,8 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
           <div className="relative py-2">
             <button 
               onMouseEnter={() => setActiveDropdown('produkte')}
-              onClick={(e) => handleRoute(e, '/#produkte')}
-              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
+              onClick={(e) => handleRoute(e, '/produkte')}
+              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md cursor-pointer ${
                 activeDropdown === 'produkte' || currentPath?.startsWith('/produkte') ? 'text-white font-semibold' : ''
               }`}
             >
@@ -258,8 +258,8 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
 
                 <div className="col-span-2 pt-2 mt-1.5 border-t border-neutral-100 px-2.5 flex justify-between items-center text-xs">
                   <a 
-                    href="/#produkte" 
-                    onClick={(e) => handleRoute(e, '/#produkte')} 
+                    href="/produkte" 
+                    onClick={(e) => handleRoute(e, '/produkte')} 
                     className="font-bold text-[#1c5f2e] hover:underline flex items-center gap-1"
                   >
                     <span>Alle {produkte.length} Produkte im Überblick</span>
@@ -274,8 +274,8 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
           <div className="relative py-2">
             <button 
               onMouseEnter={() => setActiveDropdown('werkstoffe')}
-              onClick={(e) => handleRoute(e, '/#werkstoffe')}
-              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
+              onClick={(e) => handleRoute(e, '/werkstoffe')}
+              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md cursor-pointer ${
                 activeDropdown === 'werkstoffe' || currentPath?.startsWith('/werkstoffe') ? 'text-white font-semibold' : ''
               }`}
             >
@@ -302,8 +302,8 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
 
                 <div className="pt-2 mt-1.5 border-t border-neutral-100 px-2.5 flex justify-between items-center text-xs">
                   <a 
-                    href="/#werkstoffe" 
-                    onClick={(e) => handleRoute(e, '/#werkstoffe')} 
+                    href="/werkstoffe" 
+                    onClick={(e) => handleRoute(e, '/werkstoffe')} 
                     className="font-bold text-[#1c5f2e] hover:underline flex items-center gap-1"
                   >
                     <span>Alle {werkstoffe.length} Werkstoffe im Überblick</span>
@@ -318,8 +318,8 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
           <div className="relative py-2">
             <button 
               onMouseEnter={() => setActiveDropdown('anwendungen')}
-              onClick={(e) => handleRoute(e, '/#anwendungsgebiete')}
-              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md ${
+              onClick={(e) => handleRoute(e, '/anwendungsgebiete')}
+              className={`flex items-center gap-1 transition-colors hover:text-white px-1.5 py-1 rounded-md cursor-pointer ${
                 activeDropdown === 'anwendungen' || currentPath?.startsWith('/anwendungsgebiete') ? 'text-white font-semibold' : ''
               }`}
             >
@@ -343,8 +343,8 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
 
                 <div className="col-span-2 pt-2 mt-1.5 border-t border-neutral-100 px-2.5 flex justify-between items-center text-xs">
                   <a 
-                    href="/#anwendungsgebiete" 
-                    onClick={(e) => handleRoute(e, '/#anwendungsgebiete')} 
+                    href="/anwendungsgebiete" 
+                    onClick={(e) => handleRoute(e, '/anwendungsgebiete')} 
                     className="font-bold text-[#1c5f2e] hover:underline flex items-center gap-1"
                   >
                     <span>Alle {anwendungsgebiete.length} Fachbereiche im Überblick</span>
@@ -579,15 +579,15 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
           </form>
 
           <div className="flex flex-col space-y-3 text-sm font-medium text-white/90">
-            <a href="/#produkte" onClick={(e) => handleRoute(e, '/#produkte')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+            <a href="/produkte" onClick={(e) => handleRoute(e, '/produkte')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
               <span>Produkte ({produkte.length})</span>
               <ArrowRight className="w-4 h-4 text-emerald-400" />
             </a>
-            <a href="/#werkstoffe" onClick={(e) => handleRoute(e, '/#werkstoffe')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+            <a href="/werkstoffe" onClick={(e) => handleRoute(e, '/werkstoffe')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
               <span>Werkstoffe ({werkstoffe.length})</span>
               <ArrowRight className="w-4 h-4 text-emerald-400" />
             </a>
-            <a href="/#anwendungsgebiete" onClick={(e) => handleRoute(e, '/#anwendungsgebiete')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
+            <a href="/anwendungsgebiete" onClick={(e) => handleRoute(e, '/anwendungsgebiete')} className="py-1.5 hover:text-emerald-400 transition-colors flex justify-between items-center border-b border-white/10">
               <span>Anwendungsgebiete ({anwendungsgebiete.length})</span>
               <ArrowRight className="w-4 h-4 text-emerald-400" />
             </a>
