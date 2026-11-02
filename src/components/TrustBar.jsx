@@ -2,55 +2,9 @@ import React from 'react';
 
 export default function TrustBar() {
   return (
-    <section className="relative z-20 -mt-16 sm:-mt-20 lg:-mt-24 w-full select-none bg-transparent">
+    <section className="relative z-20 -mt-44 sm:-mt-64 lg:-mt-[398px] pb-16 sm:pb-24 lg:pb-44 w-full select-none bg-transparent">
       
-      {/* 1. Schmaler, dezenter Stahlbau-Übergangsstreifen (sitzt exakt auf der unteren Kachel-Hälfte hinter den Cards) */}
-      <div className="absolute top-[60px] sm:top-[76px] lg:top-[92px] inset-x-0 h-[50px] sm:h-[52px] z-0 overflow-hidden pointer-events-none select-none bg-[#092211] border-y border-[#1c5f2e]/35 shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            {/* Feine, dezente Stahlbau-Fachwerk-Musterkachel (160px x 52px, 5 Felder x 2 Reihen) */}
-            <pattern id="steelStructurePattern" width="160" height="52" patternUnits="userSpaceOnUse">
-              {/* Horizontale Stahlträger-Gurte */}
-              <line x1="0" y1="0" x2="160" y2="0" stroke="rgba(34, 197, 94, 0.16)" strokeWidth="0.8" />
-              <line x1="0" y1="26" x2="160" y2="26" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
-              <line x1="0" y1="52" x2="160" y2="52" stroke="rgba(34, 197, 94, 0.16)" strokeWidth="0.8" />
-              
-              {/* Vertikale Stützen */}
-              <line x1="0" y1="0" x2="0" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
-              <line x1="32" y1="0" x2="32" y2="52" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
-              <line x1="64" y1="0" x2="64" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
-              <line x1="96" y1="0" x2="96" y2="52" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
-              <line x1="128" y1="0" x2="128" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
-              <line x1="160" y1="0" x2="160" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
-
-              {/* Dezente Fachwerk-Diagonalstreben */}
-              <line x1="2" y1="2" x2="30" y2="24" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
-              <line x1="94" y1="2" x2="66" y2="24" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
-              <line x1="34" y1="28" x2="62" y2="50" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
-              <line x1="158" y1="28" x2="130" y2="50" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
-
-              {/* Dezente Knoten-Punkte */}
-              <circle cx="32" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
-              <circle cx="96" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
-              <circle cx="128" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
-
-              {/* Subtile Weber-Grün Akzent-Kacheln (ohne Glow, ruhig & edel) */}
-              <rect x="34" y="2" width="28" height="22" rx="1.5" fill="rgba(34, 197, 94, 0.07)" stroke="rgba(74, 222, 128, 0.28)" strokeWidth="0.75" />
-              <rect x="98" y="28" width="28" height="22" rx="1.5" fill="rgba(21, 128, 61, 0.1)" stroke="rgba(34, 197, 94, 0.22)" strokeWidth="0.75" />
-              <rect x="130" y="2" width="28" height="22" rx="1.5" fill="rgba(34, 197, 94, 0.03)" stroke="rgba(74, 222, 128, 0.15)" strokeWidth="0.75" strokeDasharray="2 2" />
-            </pattern>
-          </defs>
-
-          {/* Füllung mit dem feinen Stahlbau-Muster */}
-          <rect width="100%" height="100%" fill="url(#steelStructurePattern)" />
-        </svg>
-
-        {/* Weiche Vignette an den Seiten */}
-        <div className="absolute inset-y-0 left-0 w-28 sm:w-40 bg-gradient-to-r from-[#092211] to-transparent pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-28 sm:w-40 bg-gradient-to-l from-[#092211] to-transparent pointer-events-none" />
-      </div>
-
-      {/* 2. Die 4 interessanten Kacheln (liegen auf z-10 im Vordergrund über dem Stahlbau-Raster) */}
+      {/* Die 4 Kennzahlen-Kacheln (liegen auf dem durchgehenden grünen Werks-Hintergrundbild) */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
           

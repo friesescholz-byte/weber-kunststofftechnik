@@ -19,122 +19,154 @@ export default function Hero() {
   return (
     <section 
       ref={heroRef}
-      className="relative pt-36 sm:pt-44 lg:pt-48 pb-32 sm:pb-38 lg:pb-44 text-white overflow-hidden bg-[#0d2a14]"
+      className="relative pt-36 sm:pt-40 lg:pt-40 pb-52 sm:pb-72 lg:pb-[430px] text-white overflow-hidden bg-[#1b592c]"
     >
       
-      {/* Background Layers mit butterweichem Parallax-Scroll */}
+      {/* Background Layers mit butterweichem Parallax-Scroll (Großflächig über die gesamte Seite & hell abgestimmt) */}
       <div className="absolute inset-0 pointer-events-none select-none z-0 overflow-hidden">
         
-        {/* Layer 1: Werksgelände Drohnenshot mit GPU-beschleunigtem Parallax, horizontal gespiegelt & Maskierung */}
+        {/* Layer 1: Werksgelände Drohnenshot in exakt derselben großen Skalierung (2170px Höhe, -310px Top) wie im Original */}
         <motion.div 
           style={{ 
             y: backgroundY,
-            willChange: "transform",
-            transform: "translate3d(0, 0, 0)"
+            height: "2170px",
+            top: "-310px",
+            left: 0,
+            right: 0,
+            willChange: "transform"
           }}
-          className="absolute inset-0 w-full h-[140%] -top-[20%]"
+          className="absolute w-full"
         >
           <div
             className="w-full h-full"
             style={{
-              // Bild ist links unter dem Text sanft abgedunkelt/ausgeblendet, rechts voll sichtbar
-              maskImage: "linear-gradient(to right, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.95) 100%)",
-              WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.95) 100%)"
+              maskImage: "linear-gradient(to right, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.78) 45%, rgba(0,0,0,1) 100%)",
+              WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.78) 45%, rgba(0,0,0,1) 100%)"
             }}
           >
             <img 
               src={IMAGES.droneShot} 
               alt="Luftaufnahme Werksgelände Minden" 
-              className="w-full h-full object-cover object-center -scale-x-100"
+              className="w-full h-full object-cover object-center brightness-[1.15]"
               style={{ transform: "scaleX(-1)" }}
             />
           </div>
         </motion.div>
 
-        {/* Layer 2: Deep Weber-Green Multiplied Tint */}
+        {/* Layer 2: Weber-Green Multiplied Tint */}
         <div 
-          className="absolute inset-0 bg-[#1c5f2e] opacity-[0.88] mix-blend-multiply"
+          className="absolute inset-0 bg-[#267d3d] opacity-[0.52] mix-blend-multiply"
         />
 
-        {/* Layer 3: Text-Lesbarkeits-Vignette (Dunkler, ruhiger Farbverlauf gezielt hinter dem Textbereich links) */}
+        {/* Layer 3: Dezente Text-Lesbarkeits-Vignette links */}
         <div 
-          className="absolute inset-y-0 left-0 w-full lg:w-3/5 bg-gradient-to-r from-[#081b0d]/95 via-[#0b2612]/80 to-transparent z-[1]"
+          className="absolute inset-y-0 left-0 w-full lg:w-1/2 bg-gradient-to-r from-[#0e3017]/60 via-[#13401f]/30 to-transparent z-[1]"
         />
 
-        {/* Layer 4: Contrast Darken Gradient über die gesamte Fläche */}
+        {/* Layer 4: Leichter Contrast Gradient über die gesamte Fläche */}
         <div 
-          className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/80 z-[1]"
+          className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/35 z-[1]"
         />
 
         {/* Layer 5: 135-degree Diagonal Pinstripe Hatch Pattern */}
         <div 
           className="absolute inset-0 z-[1]"
           style={{
-            backgroundImage: `repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.16) 0px, rgba(0, 0, 0, 0.16) 1px, transparent 1px, transparent 11px)`
+            backgroundImage: `repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.07) 0px, rgba(0, 0, 0, 0.07) 1px, transparent 1px, transparent 11px)`
           }}
         />
 
         {/* Layer 6: Subtle green ambient glow on the right */}
         <div 
-          className="absolute top-1/4 right-0 w-[550px] h-[550px] bg-weber-400/15 rounded-full blur-[140px] pointer-events-none z-[1]"
+          className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-emerald-400/25 rounded-full blur-[140px] pointer-events-none z-[1]"
         />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         
-        {/* Main Editorial Content (Höchste Lesbarkeit & Kontrast) */}
-        <div className="max-w-4xl mb-12 md:mb-16">
-          
-
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.08] mb-6">
+        {/* Main Editorial Content (Große, markante Überschrift + gesamtes LKW-Bild sofort beim Öffnen komplett sichtbar) */}
+        <div className="max-w-5xl mb-6 sm:mb-7">
+          <h1 className="text-3xl sm:text-5xl lg:text-[52px] font-extrabold text-white tracking-tight leading-[1.08] mb-3.5">
             Industrieller{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4ade80] via-[#a7f3d0] to-[#34d399] font-extrabold inline-block">
               Kunststoff- und Behälterbau.
             </span>{' '}
-            <span className="text-white/95 block font-bold mt-2 sm:mt-3">
+            <span className="text-white/95 block font-bold mt-1">
               Seit über 55 Jahren am Standort Minden.
             </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-white/95 font-medium leading-relaxed max-w-2xl mb-10 drop-shadow-xs">
+          <p className="text-sm sm:text-base text-white/95 font-medium leading-relaxed max-w-2xl mb-4 drop-shadow-xs">
             Wir konstruieren, fertigen und montieren thermoplastische Großbehälter, 
             Abluftwäscher und Rohrleitungssysteme für chemisch anspruchsvolle Medien – mit 
             eigener Fertigungstiefe und DIBt-Zulassung.
           </p>
 
-          <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-1">
+          <div className="flex flex-wrap items-center gap-5 sm:gap-6">
             <SpecialCtaButton text="Projekt anfragen" href="#anfrage" />
 
             <a
               href="#produkte"
-              className="inline-flex items-center gap-2 px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 text-sm font-semibold rounded-xl backdrop-blur-xs transition-colors self-center mt-3.5"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/15 hover:bg-white/25 text-white border border-white/35 text-xs sm:text-sm font-semibold rounded-xl backdrop-blur-xs transition-colors self-center mt-2"
             >
               Produkte ansehen
             </a>
           </div>
         </div>
 
-        {/* Large Hero Image: Newly generated wide 16:9 Schwerlast-Transport (Scania LKW mit Großbauwerk) */}
-        <div className="w-full rounded-2xl overflow-hidden border border-white/25 shadow-2xl bg-neutral-900 aspect-[16/9] sm:aspect-[21/9] relative group">
+        {/* Large Hero Image: Volle Breite (w-full) & beim Öffnen der Startseite komplett sichtbar (inkl. komplettem Scania-LKW, Rädern & Stoßstange) */}
+        <div className="w-full rounded-2xl overflow-hidden border border-white/25 shadow-2xl bg-neutral-900 h-[230px] sm:h-[360px] lg:h-[calc(100vh-475px)] lg:min-h-[380px] lg:max-h-[480px] relative group">
           <img 
             src={IMAGES.heavyTransport} 
             alt="Weber Kunststofftechnik Schwerlasttransport eines Großbehälters am Alexanderplatz Berlin" 
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-[center_72%]"
           />
 
           {/* Subtile fotografische Vignette zur Fokussierung auf den Scania-LKW */}
-          <div className="absolute inset-0 pointer-events-none rounded-2xl shadow-[inset_0_0_80px_rgba(0,0,0,0.32)] z-[5]" />
+          <div className="absolute inset-0 pointer-events-none rounded-2xl shadow-[inset_0_0_70px_rgba(0,0,0,0.24)] z-[5]" />
 
           {/* Dezent platziertes weißes Firmenlogo oben rechts mit Schatten */}
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-7 z-10 pointer-events-none select-none">
+          <div className="absolute top-4 right-4 sm:top-5 sm:right-6 z-10 pointer-events-none select-none">
             <img 
               src="https://pub-b33108412309406a9a941ddc51e9a5b9.r2.dev/Weber-Kunststaofftechnik/weber-logo-1-fbg-weiss-1024x410_11.webp" 
               alt="Weber Kunststofftechnik" 
-              className="h-6 sm:h-8 md:h-10 w-auto object-contain filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.75)] opacity-90"
+              className="h-6 sm:h-8 md:h-9 w-auto object-contain filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.75)] opacity-90"
             />
           </div>
         </div>
 
+      </div>
+
+      {/* Schmaler, dezenter Stahlbau-Übergangsstreifen exakt an der unteren Kante des grünen Hero-Hintergrunds */}
+      <div className="absolute bottom-0 inset-x-0 h-[44px] sm:h-[48px] z-[5] overflow-hidden pointer-events-none select-none bg-[#092211]/90 border-t border-[#1c5f2e]/45 shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="heroBottomSteelPattern" width="160" height="52" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="160" y2="0" stroke="rgba(34, 197, 94, 0.16)" strokeWidth="0.8" />
+              <line x1="0" y1="26" x2="160" y2="26" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
+              <line x1="0" y1="52" x2="160" y2="52" stroke="rgba(34, 197, 94, 0.16)" strokeWidth="0.8" />
+              <line x1="0" y1="0" x2="0" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="32" y1="0" x2="32" y2="52" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
+              <line x1="64" y1="0" x2="64" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="96" y1="0" x2="96" y2="52" stroke="rgba(148, 163, 184, 0.08)" strokeWidth="0.8" />
+              <line x1="128" y1="0" x2="128" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="160" y1="0" x2="160" y2="52" stroke="rgba(34, 197, 94, 0.12)" strokeWidth="0.8" />
+              <line x1="2" y1="2" x2="30" y2="24" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <line x1="94" y1="2" x2="66" y2="24" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <line x1="34" y1="28" x2="62" y2="50" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <line x1="158" y1="28" x2="130" y2="50" stroke="rgba(74, 222, 128, 0.12)" strokeWidth="0.75" />
+              <circle cx="32" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
+              <circle cx="96" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
+              <circle cx="128" cy="26" r="0.8" fill="#94a3b8" opacity="0.35" />
+              <rect x="34" y="2" width="28" height="22" rx="1.5" fill="rgba(34, 197, 94, 0.07)" stroke="rgba(74, 222, 128, 0.28)" strokeWidth="0.75" />
+              <rect x="98" y="28" width="28" height="22" rx="1.5" fill="rgba(21, 128, 61, 0.1)" stroke="rgba(34, 197, 94, 0.22)" strokeWidth="0.75" />
+              <rect x="130" y="2" width="28" height="22" rx="1.5" fill="rgba(34, 197, 94, 0.03)" stroke="rgba(74, 222, 128, 0.15)" strokeWidth="0.75" strokeDasharray="2 2" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#heroBottomSteelPattern)" />
+        </svg>
+        <div className="absolute inset-y-0 left-0 w-28 sm:w-40 bg-gradient-to-r from-[#092211] to-transparent pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-28 sm:w-40 bg-gradient-to-l from-[#092211] to-transparent pointer-events-none" />
       </div>
     </section>
   );
