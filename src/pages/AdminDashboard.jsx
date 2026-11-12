@@ -524,25 +524,41 @@ export default function AdminDashboard({ onNavigate }) {
     setTimeout(() => setToast(''), 4000);
   };
 
-  // Render official Cloudflare Turnstile widget on login screen
+  // Render official Cloudflare Turnstile widget on login screen (Explicit Mode)
   useEffect(() => {
     if (isAuthenticated) return;
     let widgetId = null;
+    let isCancelled = false;
+
     const renderWidget = () => {
-      if (window.turnstile && turnstileRef.current && !turnstileRef.current.hasChildNodes()) {
+      if (isCancelled || !turnstileRef.current) return;
+      if (window.turnstile) {
+        turnstileRef.current.innerHTML = '';
         try {
           widgetId = window.turnstile.render(turnstileRef.current, {
             sitekey: TURNSTILE_SITEKEY,
             theme: 'light',
-            callback: (token) => setTurnstileToken(token)
+            callback: (token) => {
+              setTurnstileToken(token);
+              setLoginError('');
+            },
+            'error-callback': (code) => {
+              console.warn('Turnstile Login Challenge Status:', code);
+            },
+            'expired-callback': () => {
+              setTurnstileToken('');
+            }
           });
-        } catch {
-          // Already rendered
+        } catch (e) {
+          console.warn('Turnstile render warning:', e);
         }
       }
     };
-    const timer = setTimeout(renderWidget, 300);
+
+    const timer = setTimeout(renderWidget, 150);
+
     return () => {
+      isCancelled = true;
       clearTimeout(timer);
       if (widgetId && window.turnstile) {
         try {
@@ -879,9 +895,7 @@ export default function AdminDashboard({ onNavigate }) {
             <div className="py-1 flex justify-center">
               <div
                 ref={turnstileRef}
-                className="cf-turnstile"
-                data-sitekey={TURNSTILE_SITEKEY}
-                data-theme="light"
+                className="min-h-[65px] flex items-center justify-center"
               />
             </div>
 

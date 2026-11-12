@@ -82,25 +82,41 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
     }
   }, [isOpen, onClose]);
 
-  // Render official Cloudflare Turnstile widget inside modal
+  // Render official Cloudflare Turnstile widget inside modal (Explicit Mode)
   useEffect(() => {
     if (!isOpen) return;
     let widgetId = null;
+    let isCancelled = false;
+
     const renderWidget = () => {
-      if (window.turnstile && turnstileRef.current && !turnstileRef.current.hasChildNodes()) {
+      if (isCancelled || !turnstileRef.current) return;
+      if (window.turnstile) {
+        turnstileRef.current.innerHTML = '';
         try {
           widgetId = window.turnstile.render(turnstileRef.current, {
             sitekey: TURNSTILE_SITEKEY,
             theme: 'light',
-            callback: (token) => setTurnstileToken(token)
+            callback: (token) => {
+              setTurnstileToken(token);
+              setSubmitError('');
+            },
+            'error-callback': (code) => {
+              console.warn('Turnstile Challenge Status:', code);
+            },
+            'expired-callback': () => {
+              setTurnstileToken('');
+            }
           });
-        } catch {
-          // Already rendered
+        } catch (e) {
+          console.warn('Turnstile render warning:', e);
         }
       }
     };
-    const timer = setTimeout(renderWidget, 250);
+
+    const timer = setTimeout(renderWidget, 150);
+
     return () => {
+      isCancelled = true;
       clearTimeout(timer);
       if (widgetId && window.turnstile) {
         try {
@@ -334,13 +350,11 @@ export default function RequestModal({ isOpen, onClose, prefill }) {
                 </div>
               )}
 
-              {/* Cloudflare Turnstile Sicherheitsüberprüfung */}
+              {/* Cloudflare Turnstile Sicherheitsüberprüfung (Explicit Container) */}
               <div className="py-1 flex justify-center" id="request-modal-turnstile">
                 <div
                   ref={turnstileRef}
-                  className="cf-turnstile"
-                  data-sitekey={TURNSTILE_SITEKEY}
-                  data-theme="light"
+                  className="min-h-[65px] flex items-center justify-center"
                 />
               </div>
 
