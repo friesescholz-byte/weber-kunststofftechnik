@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Search, X, ChevronDown, Menu, ArrowRight, FileText, FlaskConical, Layers, Briefcase } from 'lucide-react';
 import { useCms } from '../data/cmsStore';
 import { CHEMICAL_DATABASE } from '../data/weberData';
@@ -9,6 +9,9 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchInputRef = useRef(null);
+  const searchContainerRef = useRef(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -20,6 +23,29 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Schließe Suche bei Escape oder Klick außerhalb
+  useEffect(() => {
+    if (!isSearchOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setSearchFocused(false);
+      }
+    };
+    const handleClickOutside = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setIsSearchOpen(false);
+        setSearchFocused(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchOpen]);
 
   // Dynamische 3-Spalten-Aufteilung für Anwendungsgebiete (inkl. im Admin neu angelegter Einträge)
   const anwendungenClusters = useMemo(() => {
@@ -199,11 +225,11 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
     <header 
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-[#06170c]/95 backdrop-blur-md border-b border-emerald-900/50 shadow-xl shadow-black/25 py-3 sm:py-3.5' 
-          : 'bg-[#06170c]/65 backdrop-blur-md border-b border-white/15 shadow-lg shadow-black/20 py-5 sm:py-6 lg:py-7'
+          ? 'bg-[#06170c]/95 backdrop-blur-md border-b border-emerald-900/50 shadow-xl shadow-black/25 py-2.5 sm:py-3.5' 
+          : 'bg-[#06170c]/65 backdrop-blur-md border-b border-white/15 shadow-lg shadow-black/20 py-3.5 sm:py-5 lg:py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 xl:gap-8 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-5 xl:px-8 flex items-center justify-between gap-2 sm:gap-3 lg:gap-3 xl:gap-6 transition-all duration-300">
         
         {/* Offizielles Weber Firmenlogo */}
         <a
@@ -216,15 +242,15 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
             alt="Kunststofftechnik Weber GmbH" 
             className={`w-auto object-contain transition-all duration-300 ${
               isScrolled 
-                ? 'h-8 sm:h-9 md:h-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]' 
-                : 'h-11 sm:h-12 md:h-14 lg:h-16 drop-shadow-[0_2px_14px_rgba(0,0,0,0.7)]'
+                ? 'h-7 sm:h-8 md:h-9 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]' 
+                : 'h-8 sm:h-9 md:h-11 lg:h-11 xl:h-14 drop-shadow-[0_2px_14px_rgba(0,0,0,0.7)]'
             }`}
           />
         </a>
 
         {/* Desktop Navigation */}
         <nav 
-          className={`hidden lg:flex items-center gap-3.5 xl:gap-6 text-sm font-medium transition-colors duration-300 ${
+          className={`hidden lg:flex items-center gap-1.5 xl:gap-3.5 2xl:gap-5 text-xs xl:text-sm font-medium transition-colors duration-300 ${
             isScrolled ? 'text-neutral-200' : 'text-white/90'
           }`}
           onMouseLeave={() => setActiveDropdown(null)}
@@ -463,81 +489,107 @@ export default function Header({ currentPath, onNavigate, onSearchQuery, onSelec
           </div>
         </nav>
 
-        {/* Right Actions: Intelligentes Suchfeld & Kontakt-Button */}
-        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+        {/* Right Actions: Dezent aufklappbare Industrie-Suche & Weber Special CTA */}
+        <div className="flex items-center gap-2 sm:gap-2.5 xl:gap-3 shrink-0">
           
-          <div className="relative">
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-              <div className={`flex items-center border rounded-lg px-2.5 py-1.5 transition-all shadow-xs w-32 sm:w-40 xl:w-48 ${
-                isScrolled 
-                  ? 'bg-black/35 hover:bg-black/45 focus-within:bg-black/60 border-emerald-800/50 text-white' 
-                  : 'bg-white/10 hover:bg-white/15 focus-within:bg-white/20 border-white/20 text-white'
-              }`}>
-                <Search className={`w-3.5 h-3.5 mr-2 shrink-0 ${isScrolled ? 'text-emerald-400' : 'text-white/80'}`} />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="z.B. Salzsäure, PVDF..."
-                  className="w-full text-xs text-white placeholder:text-white/60 bg-transparent outline-none"
-                />
-                {searchTerm && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchTerm('')}
-                    className="text-white/60 hover:text-white p-0.5 shrink-0"
-                    title="Zurücksetzen"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
-            </form>
+          <div className="relative" ref={searchContainerRef}>
+            {isSearchOpen ? (
+              <div className="relative flex items-center animate-in fade-in zoom-in-95 duration-150">
+                <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                  <div className={`flex items-center border rounded-xl px-2.5 py-1.5 transition-all shadow-xl w-44 sm:w-56 xl:w-64 ${
+                    isScrolled 
+                      ? 'bg-black/95 border-emerald-500/70 text-white ring-1 ring-emerald-500/30' 
+                      : 'bg-[#06170c]/98 border-emerald-400/60 text-white ring-1 ring-emerald-400/30'
+                  }`}>
+                    <Search className="w-3.5 h-3.5 mr-2 shrink-0 text-emerald-400" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchTerm}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setTimeout(() => setSearchFocused(false), 250)}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder="z.B. Salzsäure, Tank, PVDF..."
+                      className="w-full text-xs text-white placeholder:text-white/60 bg-transparent outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setIsSearchOpen(false);
+                      }}
+                      className="text-white/60 hover:text-white p-0.5 ml-1 shrink-0 cursor-pointer"
+                      title="Suche schließen (Esc)"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </form>
 
-            {/* Live-Suchvorschläge Dropdown */}
-            {searchFocused && searchTerm.trim().length >= 2 && (
-              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-neutral-200 rounded-2xl shadow-2xl overflow-hidden z-50 text-slate-900">
-                <div className="px-4 py-2.5 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
-                    Direkt-Treffer ({liveResults.length})
-                  </span>
-                  <span className="text-[11px] text-emerald-700 font-medium">
-                    Industrie-Sofortsuche
-                  </span>
-                </div>
-                {liveResults.length > 0 ? (
-                  <div className="divide-y divide-neutral-100 max-h-80 overflow-y-auto">
-                    {liveResults.map((res, idx) => (
-                      <a
-                        key={idx}
-                        href={res.route}
-                        onMouseDown={(e) => handleRoute(e, res.route)}
-                        className="px-4 py-3 hover:bg-emerald-50/50 flex items-start justify-between gap-3 transition-colors block"
-                      >
-                        <div>
-                          <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded mb-1">
-                            {res.type}
-                          </span>
-                          <div className="text-xs font-bold text-slate-900">{res.title}</div>
-                          <div className="text-[11px] text-neutral-500 mt-0.5">{res.sub}</div>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-neutral-400 shrink-0 mt-1" />
-                      </a>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="px-4 py-6 text-center text-xs text-neutral-500">
-                    Keine direkten Treffer für „{searchTerm}“. Drücken Sie Enter für die Volltextsuche.
+                {/* Live-Suchvorschläge Dropdown */}
+                {searchFocused && searchTerm.trim().length >= 2 && (
+                  <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-neutral-200 rounded-2xl shadow-2xl overflow-hidden z-50 text-slate-900">
+                    <div className="px-4 py-2.5 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                        Direkt-Treffer ({liveResults.length})
+                      </span>
+                      <span className="text-[11px] text-emerald-700 font-medium">
+                        Industrie-Sofortsuche
+                      </span>
+                    </div>
+                    {liveResults.length > 0 ? (
+                      <div className="divide-y divide-neutral-100 max-h-80 overflow-y-auto">
+                        {liveResults.map((res, idx) => (
+                          <a
+                            key={idx}
+                            href={res.route}
+                            onMouseDown={(e) => {
+                              handleRoute(e, res.route);
+                              setIsSearchOpen(false);
+                            }}
+                            className="px-4 py-3 hover:bg-emerald-50/50 flex items-start justify-between gap-3 transition-colors block"
+                          >
+                            <div>
+                              <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-1.5 py-0.5 rounded mb-1">
+                                {res.type}
+                              </span>
+                              <div className="text-xs font-bold text-slate-900">{res.title}</div>
+                              <div className="text-[11px] text-neutral-500 mt-0.5">{res.sub}</div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-neutral-400 shrink-0 mt-1" />
+                          </a>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="px-4 py-6 text-center text-xs text-neutral-500">
+                        Keine direkten Treffer für „{searchTerm}“. Drücken Sie Enter für die Volltextsuche.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSearchOpen(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 60);
+                }}
+                className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border transition-all cursor-pointer ${
+                  isScrolled 
+                    ? 'bg-black/35 hover:bg-black/55 border-emerald-800/50 text-emerald-400 hover:text-white' 
+                    : 'bg-white/10 hover:bg-white/20 border-white/20 text-white/90 hover:text-white'
+                }`}
+                title="Industrie-Sofortsuche öffnen"
+                aria-label="Industrie-Sofortsuche öffnen"
+              >
+                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+              </button>
             )}
           </div>
 
           {/* Primary Action Button: Weber Special CTA (compact size='sm') */}
-          <div className="hidden sm:block">
+          <div className="hidden sm:block shrink-0">
             <SpecialCtaButton
               size="sm"
               text="Projekt anfragen"
