@@ -853,9 +853,6 @@ export default function AdminDashboard({ onNavigate }) {
             <h1 className="text-2xl font-extrabold tracking-tight mt-1">
               CMS & Admin-Dashboard
             </h1>
-            <p className="text-xs text-emerald-100/80 mt-1">
-              Einfache Verwaltung für Produkte, Anwendungsgebiete, Werkstoffe, Karriere und PDF-Downloads.
-            </p>
           </div>
 
           <form onSubmit={handleLogin} className="p-6 sm:p-8 space-y-5">

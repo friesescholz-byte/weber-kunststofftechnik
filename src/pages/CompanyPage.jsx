@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { IMAGES, COMPANY_FACTS, GLOBAL_LOCATIONS, CERTIFICATES_LIST } from '../data/weberData';
 import ClosingCtaSection from '../components/ClosingCtaSection';
+import HeroMediaSlider from '../components/HeroMediaSlider';
 
 
 export default function CompanyPage({ onNavigate, onOpenRequestModal }) {
@@ -131,7 +132,7 @@ export default function CompanyPage({ onNavigate, onOpenRequestModal }) {
           </div>
 
           {/* Quick Anchor Navigation Pills without 01-04 */}
-          <div className="mt-10 pt-8 border-t border-white/10 flex flex-wrap gap-3">
+          <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap gap-3">
             <a 
               href="#ueber-uns" 
               className="px-4 py-2 rounded-xl bg-white/10 hover:bg-emerald-500/20 border border-white/15 hover:border-emerald-400/40 text-white text-xs font-medium tracking-wide transition-all shadow-sm"
@@ -156,6 +157,11 @@ export default function CompanyPage({ onNavigate, onOpenRequestModal }) {
             >
               Standorte weltweit
             </a>
+          </div>
+
+          {/* Bild-Slider direkt oben beim Seitenaufruf */}
+          <div className="mt-8">
+            <HeroMediaSlider heightClass="h-[240px] sm:h-[360px] lg:h-[440px]" />
           </div>
 
         </div>

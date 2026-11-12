@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { IMAGES } from '../data/weberData';
 import SpecialCtaButton from './SpecialCtaButton';
+import HeroMediaSlider from './HeroMediaSlider';
 
 export default function Hero() {
   const heroRef = useRef(null);
@@ -104,36 +105,11 @@ export default function Hero() {
 
           <div className="flex flex-wrap items-center gap-5 sm:gap-6">
             <SpecialCtaButton text="Projekt anfragen" href="#anfrage" />
-
-            <a
-              href="#produkte"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/15 hover:bg-white/25 text-white border border-white/35 text-xs sm:text-sm font-semibold rounded-xl backdrop-blur-xs transition-colors self-center mt-2"
-            >
-              Produkte ansehen
-            </a>
           </div>
         </div>
 
-        {/* Large Hero Image: Volle Breite (w-full) & beim Öffnen der Startseite komplett sichtbar (inkl. komplettem Scania-LKW, Rädern & Stoßstange) */}
-        <div className="w-full rounded-2xl overflow-hidden border border-white/25 shadow-2xl bg-neutral-900 h-[230px] sm:h-[360px] lg:h-[calc(100vh-475px)] lg:min-h-[380px] lg:max-h-[480px] relative group">
-          <img 
-            src={IMAGES.heavyTransport} 
-            alt="Weber Kunststofftechnik Schwerlasttransport eines Großbehälters am Alexanderplatz Berlin" 
-            className="w-full h-full object-cover object-[center_72%]"
-          />
-
-          {/* Subtile fotografische Vignette zur Fokussierung auf den Scania-LKW */}
-          <div className="absolute inset-0 pointer-events-none rounded-2xl shadow-[inset_0_0_70px_rgba(0,0,0,0.24)] z-[5]" />
-
-          {/* Dezent platziertes weißes Firmenlogo oben rechts mit Schatten */}
-          <div className="absolute top-4 right-4 sm:top-5 sm:right-6 z-10 pointer-events-none select-none">
-            <img 
-              src="https://pub-b33108412309406a9a941ddc51e9a5b9.r2.dev/Weber-Kunststaofftechnik/weber-logo-1-fbg-weiss-1024x410_11.webp" 
-              alt="Weber Kunststofftechnik" 
-              className="h-6 sm:h-8 md:h-9 w-auto object-contain filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.75)] opacity-90"
-            />
-          </div>
-        </div>
+        {/* Dynamic Multi-Photo Slider mit bewegten Bildern (Cinematic Ken Burns Motion) */}
+        <HeroMediaSlider />
 
       </div>
 

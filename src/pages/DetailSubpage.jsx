@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle2, ZoomIn, X, ChevronLeft, ChevronRight, Layers, FileText, Phone } from 'lucide-react';
 import { useCms } from '../data/cmsStore';
-import { COMPANY_FACTS, CHEMICAL_DATABASE, DVS2205_CHEMICALS } from '../data/weberData';
+import { COMPANY_FACTS } from '../data/weberData';
 import SpecialCtaButton from '../components/SpecialCtaButton';
 import ClosingCtaSection from '../components/ClosingCtaSection';
 
@@ -73,20 +73,6 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
     : [];
 
   const currentImage = gallery[activeImageIdx] || gallery[0];
-
-  // For Werkstoffe: evaluate authentic chemical resistance data
-  const chemicalProfile = type === 'werkstoffe' && Array.isArray(DVS2205_CHEMICALS)
-    ? DVS2205_CHEMICALS.map((chem) => {
-        const rating = (chem.ratings && chem.ratings[item.id]) || { grade: 'A', note: 'Beständig' };
-        return {
-          name: chem.name,
-          conc: chem.conc,
-          grade: rating.grade,
-          statusLabel: rating.grade === 'A' ? 'Beständig' : rating.grade === 'B' ? 'Bedingt beständig' : 'Nicht empfohlen',
-          note: rating.note
-        };
-      })
-    : [];
 
   // Robust, clean renderer for Technical Specifications (NO numbers, NO character-splitting)
   const renderTechnicalSpecs = () => {
@@ -486,74 +472,6 @@ export default function DetailSubpage({ type, slug, onNavigate, onOpenRequestMod
             </div>
 
           </div>
-
-          {/* Full-Width Spacious Chemical Resistance Matrix for Werkstoffe */}
-          {type === 'werkstoffe' && chemicalProfile.length > 0 && (
-            <div className="mt-12 sm:mt-16 bg-white rounded-3xl border border-neutral-200/90 p-7 sm:p-10 shadow-xs">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-neutral-100">
-                <div>
-                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#1c5f2e] block mb-2">
-                    Chemische Beständigkeit
-                  </span>
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                    Beständigkeitsübersicht für {item.name || item.code}
-                  </h3>
-                  <p className="text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
-                    Praxisbewährte Richtwerte für thermoplastische Behälter und Apparate. Für individuelle Prozessparameter, Konzentrationen und Mischmedien führen unsere Ingenieure in Minden die detaillierte Auslegung durch.
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => {
-                    if (onOpenRequestModal) {
-                      onOpenRequestModal({ 
-                        title: `${item.name || item.code} Beständigkeitsprüfung`, 
-                        type: 'werkstoff' 
-                      });
-                    } else {
-                      document.getElementById('anfrage')?.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                  className="px-5 py-2.5 rounded-xl bg-[#0d2a14] hover:bg-[#154220] text-white font-bold text-xs transition-colors shrink-0 flex items-center gap-2 cursor-pointer"
-                >
-                  <span>Medium prüfen lassen</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Clean, spacious 3-column responsive grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {chemicalProfile.map((c, idx) => (
-                  <div 
-                    key={idx}
-                    className="p-5 rounded-2xl bg-[#FBF9F5] border border-neutral-200/70 hover:border-neutral-300 transition-colors flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between gap-3 mb-2">
-                        <h4 className="font-bold text-slate-900 text-sm leading-snug">
-                          {c.name}
-                        </h4>
-                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold shrink-0 ${
-                          c.grade === 'A' ? 'bg-emerald-100 text-emerald-800' :
-                          c.grade === 'B' ? 'bg-amber-100 text-amber-800' :
-                          'bg-slate-200 text-slate-700'
-                        }`}>
-                          {c.statusLabel}
-                        </span>
-                      </div>
-                      <span className="text-xs font-mono text-slate-500 block mb-2">
-                        Konzentration: {c.conc}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-600 pt-2.5 border-t border-neutral-200/60 leading-relaxed">
-                      {c.note}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
 

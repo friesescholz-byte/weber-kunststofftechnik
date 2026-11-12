@@ -7,6 +7,7 @@ export const IMAGES = {
   logoDark: `${R2_BASE}/weber-logo-dark.webp`,
   logoBlack: `${R2_BASE}/weber-logo-black.webp`,
   panorama: `${R2_BASE}/weber-werkshalle-panorama.webp`,
+  hall: `${R2_BASE}/weber-werkshalle-panorama.webp`,
   tanklager: `${R2_BASE}/weber-kunststofftechnik-tanklager17_10.webp`,
   rundbehaelter: `${R2_BASE}/weber-kunststofftechnik-rundbehaelter05_09.webp`,
   rechteckbehaelter: `${R2_BASE}/weber-kunststofftechnik-rechteckbehaelter03_07.webp`,
